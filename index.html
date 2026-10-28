@@ -78,7 +78,7 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
 .section-title { text-align: center; font-size: clamp(1.8rem, 4.5vw, 2.8rem); margin-bottom: 20px; background: linear-gradient(90deg, var(--violet-light), var(--blue-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .section-sub { text-align: center; color: var(--text-dim); margin-bottom: 50px; font-size: 1.05rem; }
 
-/* СИСТЕМЫ И ВАКАНСИИ */
+/* СИСТЕМЫ */
 .systems { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
 .system-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 20px; padding: 28px 24px; cursor: pointer; transition: transform 0.35s, box-shadow 0.35s, border-color 0.35s; }
 .system-card:hover { transform: translateY(-8px); border-color: rgba(157, 107, 255, 0.7); box-shadow: 0 20px 50px rgba(123, 63, 242, 0.4); }
@@ -88,6 +88,16 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
 .badge-danger { display: inline-block; margin-top: 12px; padding: 6px 14px; background: rgba(255, 77, 109, 0.15); border: 1px solid rgba(255, 77, 109, 0.5); color: #ff8095; font-size: 0.8rem; font-weight: 600; border-radius: 999px; animation: blink 2s ease-in-out infinite; }
 @keyframes blink { 0%,100% { box-shadow: 0 0 0 rgba(255,77,109,0); } 50% { box-shadow: 0 0 18px rgba(255,77,109,0.5); } }
 
+/* НАША КОМАНДА */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px; }
+.team-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 30px 20px; text-align: center; transition: transform 0.35s, border-color 0.35s; }
+.team-card:hover { transform: translateY(-5px); border-color: rgba(157, 107, 255, 0.7); }
+.team-avatar { width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; display: grid; place-items: center; font-size: 2.5rem; background: linear-gradient(135deg, var(--violet), var(--blue)); border: 3px solid rgba(255,255,255,0.1); }
+.team-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
+.team-card p { color: var(--success); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+.team-card small { color: var(--text-dim); font-size: 0.85rem; display: block; line-height: 1.4; }
+
+/* ВАКАНСИИ */
 .vacancies-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 40px; }
 .vacancy-card { display: flex; flex-direction: column; justify-content: space-between; background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 20px; padding: 30px; backdrop-filter: blur(14px); transition: transform 0.35s; }
 .vacancy-card:hover { transform: translateY(-6px); border-color: rgba(157, 107, 255, 0.7); }
@@ -169,6 +179,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <a data-page="home" class="active" onclick="showPage('home')">Главная</a>
     <a data-page="systems" onclick="showPage('systems')">Информационные системы</a>
     <a data-page="advantages" onclick="showPage('advantages')">Наши преимущества</a>
+    <a data-page="team" onclick="showPage('team')">Наша команда</a>
     <a data-page="jobs" onclick="showPage('jobs')">Работа у нас</a>
     <a data-page="ou" onclick="showPage('ou')">Для ОУ</a>
     <a data-page="contacts" onclick="showPage('contacts')">Контакты</a>
@@ -223,6 +234,28 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="adv-card"><div class="adv-icon">🏆</div><h3>Опыт</h3><p>Вы получите незабываемый опыт работы и сотрудничества с нами.</p></div>
     <div class="adv-card"><div class="adv-icon">⚖️</div><h3>Законность</h3><p>В нашей МРОО имеются свои основные регламенты и локальные акты.</p></div>
     <div class="adv-card"><div class="adv-icon">📈</div><h3>Карьерный рост</h3><p>Множество различных отделений и специалистов, куда можно поступить.</p></div>
+  </div>
+</section>
+
+<!-- НАША КОМАНДА -->
+<section class="page" id="page-team">
+  <h2 class="section-title">Наша команда</h2>
+  <p class="section-sub">Люди, которые делают образование лучше</p>
+  
+  <div class="team-grid" id="teamGrid"></div>
+
+  <!-- Панель управления командой (только для админов) -->
+  <div class="admin-panel" id="teamAdminPanel" style="display: none; margin-top: 50px;">
+    <h2>Управление командой</h2>
+    <div class="staff-list" id="teamAdminList"></div>
+    
+    <h3 style="color: #fff; margin: 20px 0 15px;">Добавить участника</h3>
+    <div class="staff-form">
+      <input type="text" id="teamFio" placeholder="ФИО (Иванов Иван)">
+      <input type="text" id="teamRole" placeholder="Должность (например: Руководитель)">
+      <input type="text" id="teamDesc" placeholder="Краткое описание (необязательно)">
+      <button onclick="addTeamMember()">Добавить в команду</button>
+    </div>
   </div>
 </section>
 
@@ -420,9 +453,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     appId: "1:204172115670:web:fd6388088d3b2e1e689377"
   };
 
-  // СПИСОК UID ДЛЯ РАЗРАБОТЧИКОВ
   const DEV_UIDS = [
-    "D41jm9A6SThvGyao7vuHgmjomIs2", // Главный (ваш старый)
+    "D41jm9A6SThvGyao7vuHgmjomIs2", // Главный
     "xo1MxVhUsfaB6yCMn8u4sZjKqvm2"  // Новый разработчик
   ]; 
 
@@ -434,14 +466,14 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
   window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
   window.signInWithEmailAndPassword = signInWithEmailAndPassword; window.signOut = signOut;
-  window.DEV_UIDS = DEV_UIDS; // Передаем массив в глобальную область
+  window.DEV_UIDS = DEV_UIDS;
 
   window.dispatchEvent(new Event('firebaseReady'));
 </script>
 
 <script>
 let currentUser = null;
-let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], frozen: false };
+let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], frozen: false };
 let currentApplyVacancyTitle = "";
 let currentVerifyOuId = null;
 
@@ -476,16 +508,20 @@ async function initApp() {
       renderOuApplications();
     });
 
+    window.onSnapshot(window.collection(window.db, "team"), (snapshot) => {
+      dbData.team = [];
+      snapshot.forEach(doc => dbData.team.push({ id: doc.id, ...doc.data() }));
+      renderTeam();
+    });
+
     window.auth.onAuthStateChanged(async (user) => {
       if (user) {
         const userDoc = dbData.users.find(u => u.email === user.email);
         if (userDoc) { currentUser = userDoc; updateUI(); }
         else if (window.DEV_UIDS.includes(user.uid)) {
-          // Если UID совпадает с разработчиком, но в базе нет — создаем профиль
           const isMain = user.uid === "D41jm9A6SThvGyao7vuHgmjomIs2";
           const newAdmin = { 
-            email: user.email, 
-            role: 'dev', 
+            email: user.email, role: 'dev', 
             degree: isMain ? 'main' : 'deputy', 
             title: isMain ? 'Главный разработчик' : 'Зам. главного разработчика', 
             fio: isMain ? 'Системный администратор' : 'Новый разработчик', 
@@ -531,6 +567,7 @@ function updateUI() {
   const jobsAdminPanel = document.getElementById('jobsAdminPanel');
   const appsAdminPanel = document.getElementById('applicationsAdminPanel');
   const ouAdminPanel = document.getElementById('ouAdminPanel');
+  const teamAdminPanel = document.getElementById('teamAdminPanel');
   
   document.querySelectorAll('.nav a').forEach(a => {
     if (a.dataset.page === 'admin') a.remove();
@@ -553,18 +590,21 @@ function updateUI() {
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
+      teamAdminPanel.style.display = 'block';
     } 
     else if (currentUser.role === 'boss') {
       devControls.classList.remove('active');
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
+      teamAdminPanel.style.display = 'block'; // Руководитель тоже может управлять командой
     }
     else if (currentUser.role === 'zam') {
       devControls.classList.remove('active');
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'none';
       ouAdminPanel.style.display = 'none';
+      teamAdminPanel.style.display = 'none';
       document.querySelectorAll('.nav a').forEach(a => {
         if(a.dataset.page !== 'jobs' && a.dataset.page !== 'home') a.style.display = 'none';
       });
@@ -576,11 +616,13 @@ function updateUI() {
     jobsAdminPanel.style.display = 'none';
     appsAdminPanel.style.display = 'none';
     ouAdminPanel.style.display = 'none';
+    teamAdminPanel.style.display = 'none';
   }
 
   if (dbData.frozen) document.body.classList.add('frozen');
   else document.body.classList.remove('frozen');
   renderStaffList();
+  renderTeamAdminList();
 }
 
 async function toggleFreeze() {
@@ -605,6 +647,58 @@ function showPage(pageId) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+/* НАША КОМАНДА */
+function renderTeam() {
+  const grid = document.getElementById('teamGrid');
+  if (!grid) return;
+  if (dbData.team.length === 0) {
+    grid.innerHTML = '<p style="color: var(--text-dim); text-align: center; width: 100%; grid-column: 1/-1;">Информация о команде скоро появится.</p>';
+    return;
+  }
+  grid.innerHTML = dbData.team.map(m => `
+    <div class="team-card">
+      <div class="team-avatar">👤</div>
+      <h3>${m.fio}</h3>
+      <p>${m.role}</p>
+      <small>${m.desc || ''}</small>
+    </div>
+  `).join('');
+}
+
+function renderTeamAdminList() {
+  const list = document.getElementById('teamAdminList');
+  if (!list) return;
+  if (dbData.team.length === 0) { list.innerHTML = '<p style="color: var(--text-dim);">Участников пока нет.</p>'; return; }
+  list.innerHTML = dbData.team.map(m => `
+    <div class="staff-item" style="border-left-color: var(--success);">
+      <div>
+        <span>${m.fio}</span>
+        <small><b>Должность:</b> ${m.role}</small>
+        <small>${m.desc || ''}</small>
+      </div>
+      <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteTeamMember('${m.id}')">Удалить</button>
+    </div>
+  `).join('');
+}
+
+async function addTeamMember() {
+  const fio = document.getElementById('teamFio').value.trim();
+  const role = document.getElementById('teamRole').value.trim();
+  const desc = document.getElementById('teamDesc').value.trim();
+  
+  if (!fio || !role) { alert('Заполните ФИО и Должность!'); return; }
+  
+  await window.addDoc(window.collection(window.db, "team"), { fio, role, desc });
+  document.getElementById('teamFio').value = '';
+  document.getElementById('teamRole').value = '';
+  document.getElementById('teamDesc').value = '';
+}
+
+async function deleteTeamMember(id) {
+  if (confirm('Удалить участника из команды?')) await window.deleteDoc(window.doc(window.db, "team", id));
+}
+
+/* ВАКАНСИИ */
 function renderVacancies() {
   const grid = document.getElementById('vacanciesGrid');
   if (!grid) return;
