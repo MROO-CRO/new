@@ -143,7 +143,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
 .btn-submit { background: linear-gradient(135deg, var(--violet), var(--blue)); color: #fff; }
 
-/* Стили для проверки данных */
 .confirm-data p { color: var(--text-dim); margin-bottom: 10px; font-size: 1rem; }
 .confirm-data strong { color: #fff; }
 
@@ -270,7 +269,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
-  <!-- Панель заявок от ОУ -->
   <div class="admin-panel" id="ouAdminPanel" style="display: none; margin-top: 50px;">
     <h2>Заявки от образовательных учреждений</h2>
     <div class="staff-list" id="ouApplicationsList"></div>
@@ -375,7 +373,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- Модалка ввода кода привязки -->
 <div class="modal-overlay" id="linkOuModal">
   <div class="modal-content">
     <h3>Привязка ОО</h3>
@@ -388,7 +385,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- Модалка подтверждения данных -->
 <div class="modal-overlay" id="confirmDataModal">
   <div class="modal-content">
     <h3>Проверьте данные</h3>
@@ -400,7 +396,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- Модалка приветствия -->
 <div class="modal-overlay" id="welcomeModal">
   <div class="modal-content" style="text-align: center; border-color: var(--success);">
     <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
@@ -413,7 +408,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 <!-- ПОДКЛЮЧЕНИЕ FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
   const firebaseConfig = {
@@ -425,7 +420,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     appId: "1:204172115670:web:fd6388088d3b2e1e689377"
   };
 
-  const ADMIN_UID = "D41jm9A6SThvGyao7vuHgmjomIs2"; 
+  // СПИСОК UID ДЛЯ РАЗРАБОТЧИКОВ
+  const DEV_UIDS = [
+    "D41jm9A6SThvGyao7vuHgmjomIs2", // Главный (ваш старый)
+    "xo1MxVhUsfaB6yCMn8u4sZjKqvm2"  // Новый разработчик
+  ]; 
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -433,9 +432,9 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
   window.db = db; window.auth = auth;
   window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
-  window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot; window.query = query; window.where = where;
+  window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
   window.signInWithEmailAndPassword = signInWithEmailAndPassword; window.signOut = signOut;
-  window.ADMIN_UID = ADMIN_UID;
+  window.DEV_UIDS = DEV_UIDS; // Передаем массив в глобальную область
 
   window.dispatchEvent(new Event('firebaseReady'));
 </script>
@@ -444,7 +443,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 let currentUser = null;
 let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], frozen: false };
 let currentApplyVacancyTitle = "";
-let currentVerifyOuId = null; // Для хранения ID ОО при проверке кода
+let currentVerifyOuId = null;
 
 async function initApp() {
   try {
@@ -481,8 +480,17 @@ async function initApp() {
       if (user) {
         const userDoc = dbData.users.find(u => u.email === user.email);
         if (userDoc) { currentUser = userDoc; updateUI(); }
-        else if (user.uid === window.ADMIN_UID) {
-          const newAdmin = { email: user.email, role: 'dev', degree: 'main', title: 'Главный разработчик', fio: 'Системный администратор', dob: '1990-01-01' };
+        else if (window.DEV_UIDS.includes(user.uid)) {
+          // Если UID совпадает с разработчиком, но в базе нет — создаем профиль
+          const isMain = user.uid === "D41jm9A6SThvGyao7vuHgmjomIs2";
+          const newAdmin = { 
+            email: user.email, 
+            role: 'dev', 
+            degree: isMain ? 'main' : 'deputy', 
+            title: isMain ? 'Главный разработчик' : 'Зам. главного разработчика', 
+            fio: isMain ? 'Системный администратор' : 'Новый разработчик', 
+            dob: '1990-01-01' 
+          };
           await window.addDoc(window.collection(window.db, "users"), newAdmin);
         }
       } else { currentUser = null; updateUI(); }
@@ -698,7 +706,7 @@ function renderOuApplications() {
         <small><b>Зам:</b> ${a.zam}</small>
         <small><b>Система:</b> ${a.system}</small>
         <small><b>Тел:</b> ${a.phone} | <b>Почта:</b> ${a.email}</small>
-        <small><b>Статус:</b> ${a.status === 'approved' ? 'Одобрено (Код: ' + a.code + ')' : (a.status === 'rejected' ? 'Отклонено' : 'В ожидании')}</small>
+        <small><b>Статус:</b> ${a.status === 'approved' ? 'Одобрено (Код: ' + a.code + ')' : (a.status === 'rejected' ? 'Отклонено' : (a.status === 'linked' ? 'Привязано' : 'В ожидании'))}</small>
       </div>
       ${a.status === 'pending' ? `
       <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -713,7 +721,7 @@ async function processOu(id, status, email, name) {
   
   let code = "";
   if (status === 'approved') {
-    code = Math.random().toString(36).substring(2, 8).toUpperCase(); // Генерируем 6-значный код
+    code = Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
   await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
@@ -735,8 +743,6 @@ async function verifyCode() {
   if (found) {
     currentVerifyOuId = found.id;
     closeModal('linkOuModal');
-    
-    // Показываем данные для проверки
     document.getElementById('confirmDataContent').innerHTML = `
       <p><strong>Краткое название:</strong> ${found.shortName}</p>
       <p><strong>Полное название:</strong> ${found.fullName}</p>
@@ -752,10 +758,7 @@ async function verifyCode() {
 
 async function confirmLink() {
   if (!currentVerifyOuId) return;
-  
-  // Меняем статус на "Привязано"
   await window.setDoc(window.doc(window.db, "orgApplications", currentVerifyOuId), { status: 'linked' }, { merge: true });
-  
   closeModal('confirmDataModal');
   document.getElementById('welcomeModal').classList.add('show');
   document.getElementById('linkCode').value = '';
