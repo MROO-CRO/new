@@ -193,7 +193,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="dev-controls" id="devControls">
       <button class="btn-freeze" id="freezeBtn" onclick="toggleFreeze()">Заморозить сайт</button>
     </div>
-    <!-- Кнопка Войти теперь всегда видна, даже если заморожено -->
     <button class="login-btn" id="loginBtn" onclick="openLoginModal()">Войти</button>
   </div>
 </header>
@@ -245,7 +244,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   
   <div class="team-grid" id="teamGrid"></div>
 
-  <!-- Панель управления командой (только для админов) -->
   <div class="admin-panel" id="teamAdminPanel" style="display: none; margin-top: 50px;">
     <h2>Управление командой</h2>
     <div class="staff-list" id="teamAdminList"></div>
@@ -335,7 +333,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="staff-form">
       <input type="text" id="newFio" placeholder="ФИО">
       <input type="date" id="newDob" placeholder="Дата рождения">
-      <input type="email" id="newEmail" placeholder="Email">
+      <input type="text" id="newLogin" placeholder="Логин (для входа)">
+      <input type="password" id="newPass" placeholder="Пароль (для входа)">
       <select id="newRole" onchange="toggleDegreeField()">
         <option value="dev">Разработчик</option>
         <option value="boss">Руководитель</option>
@@ -357,7 +356,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 <div class="modal-overlay" id="loginModal">
   <div class="modal-content">
     <h3>Вход в систему</h3>
-    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" class="form-control" placeholder="admin@mroo.ru"></div>
+    <div class="form-group"><label>Логин</label><input type="text" id="loginUser" class="form-control" placeholder="admin"></div>
     <div class="form-group"><label>Пароль</label><input type="password" id="loginPass" class="form-control"></div>
     <div class="form-actions">
       <button class="btn-cancel" onclick="closeModal('loginModal')">Отмена</button>
@@ -443,7 +442,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC5B2mAOHU9rKVfvXLbcFWFSDbJiiBxMT8",
@@ -454,20 +452,12 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     appId: "1:204172115670:web:fd6388088d3b2e1e689377"
   };
 
-  const DEV_UIDS = [
-    "D41jm9A6SThvGyao7vuHgmjomIs2", // Главный
-    "xo1MxVhUsfaB6yCMn8u4sZjKqvm2"  // Новый разработчик
-  ]; 
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const auth = getAuth(app);
 
-  window.db = db; window.auth = auth;
+  window.db = db;
   window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
   window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
-  window.signInWithEmailAndPassword = signInWithEmailAndPassword; window.signOut = signOut;
-  window.DEV_UIDS = DEV_UIDS;
 
   window.dispatchEvent(new Event('firebaseReady'));
 </script>
@@ -480,6 +470,14 @@ let currentVerifyOuId = null;
 
 async function initApp() {
   try {
+    // Создаем админа по умолчанию, если база пуста
+    const usersSnap = await window.getDocs(window.collection(window.db, "users"));
+    if (usersSnap.empty) {
+      await window.addDoc(window.collection(window.db, "users"), { 
+        login: 'admin', pass: 'admin', role: 'dev', degree: 'main', title: 'Главный разработчик', fio: 'Системный администратор', dob: '1990-01-01' 
+      });
+    }
+
     window.onSnapshot(window.doc(window.db, "settings", "main"), (docSnap) => {
       dbData.frozen = docSnap.exists() ? docSnap.data().frozen : false;
       updateUI();
@@ -515,23 +513,13 @@ async function initApp() {
       renderTeam();
     });
 
-    window.auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        const userDoc = dbData.users.find(u => u.email === user.email);
-        if (userDoc) { currentUser = userDoc; updateUI(); }
-        else if (window.DEV_UIDS.includes(user.uid)) {
-          const isMain = user.uid === "D41jm9A6SThvGyao7vuHgmjomIs2";
-          const newAdmin = { 
-            email: user.email, role: 'dev', 
-            degree: isMain ? 'main' : 'deputy', 
-            title: isMain ? 'Главный разработчик' : 'Зам. главного разработчика', 
-            fio: isMain ? 'Системный администратор' : 'Новый разработчик', 
-            dob: '1990-01-01' 
-          };
-          await window.addDoc(window.collection(window.db, "users"), newAdmin);
-        }
-      } else { currentUser = null; updateUI(); }
-    });
+    // Восстанавливаем сессию из памяти браузера
+    const savedUser = sessionStorage.getItem('cro_user');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      updateUI();
+    }
+
     renderSystems();
   } catch (e) { console.error("Ошибка:", e); }
 }
@@ -544,19 +532,28 @@ function openOuModal() { document.getElementById('ouModal').classList.add('show'
 function openLinkOuModal() { document.getElementById('linkOuModal').classList.add('show'); }
 
 async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
+  const login = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
-  try {
-    await window.signInWithEmailAndPassword(window.auth, email, pass);
+  
+  const user = dbData.users.find(u => u.login === login && u.pass === pass);
+  
+  if (user) {
+    currentUser = user;
+    sessionStorage.setItem('cro_user', JSON.stringify(user));
     closeModal('loginModal');
-    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
+    updateUI();
     showPage('home');
-  } catch (error) { alert('Ошибка входа: ' + error.message); }
+  } else {
+    alert('Неверный логин или пароль!');
+  }
 }
 
 async function logout() {
-  await window.signOut(window.auth);
+  currentUser = null;
+  sessionStorage.removeItem('cro_user');
+  updateUI();
   showPage('home');
 }
 
@@ -578,7 +575,7 @@ function updateUI() {
   if (currentUser) {
     loginBtn.style.display = 'none';
     userBadge.classList.add('active');
-    userName.textContent = `${currentUser.title} (${currentUser.email || ''})`;
+    userName.textContent = `${currentUser.title} (${currentUser.login})`;
     
     if (currentUser.role === 'dev') {
       devControls.classList.add('active');
@@ -611,7 +608,7 @@ function updateUI() {
       });
     }
   } else {
-    loginBtn.style.display = 'block'; // Кнопка входа всегда видна
+    loginBtn.style.display = 'block';
     userBadge.classList.remove('active');
     devControls.classList.remove('active');
     jobsAdminPanel.style.display = 'none';
@@ -622,6 +619,7 @@ function updateUI() {
 
   if (dbData.frozen) document.body.classList.add('frozen');
   else document.body.classList.remove('frozen');
+  
   renderStaffList();
   renderTeamAdminList();
 }
@@ -638,10 +636,7 @@ function updateFreezeBtn() {
 }
 
 function showPage(pageId) {
-  // Разрешаем переход только если не заморожено или это разработчик
-  if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') {
-    return;
-  }
+  if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') return;
   if (currentUser?.role === 'zam' && pageId !== 'jobs' && pageId !== 'home') return;
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -869,7 +864,7 @@ function renderStaffList() {
   if (!list) return;
   list.innerHTML = dbData.users.map(u => `
     <div class="staff-item">
-      <div><span>${u.title}</span><small><b>ФИО:</b> ${u.fio}</small><small><b>Email:</b> ${u.email || 'Нет'}</small></div>
+      <div><span>${u.title}</span><small><b>ФИО:</b> ${u.fio}</small><small><b>Логин:</b> ${u.login}</small></div>
       ${u.role !== 'dev' || dbData.users.filter(x => x.role === 'dev').length > 1 ? 
         `<button style="background:transparent; border:none; color:var(--danger); cursor:pointer;" onclick="removeEmployee('${u.id}')">Удалить</button>` : ''}
     </div>`).join('');
@@ -878,17 +873,20 @@ function renderStaffList() {
 async function addEmployee() {
   const fio = document.getElementById('newFio').value.trim();
   const dob = document.getElementById('newDob').value;
-  const email = document.getElementById('newEmail').value.trim();
+  const login = document.getElementById('newLogin').value.trim();
+  const pass = document.getElementById('newPass').value;
   const role = document.getElementById('newRole').value;
   const degree = document.getElementById('newDegree').value;
-  if (!fio || !dob || !email) { alert('Заполните все поля!'); return; }
+  
+  if (!fio || !dob || !login || !pass) { alert('Заполните все поля!'); return; }
+  if (dbData.users.some(u => u.login === login)) { alert('Такой логин уже существует!'); return; }
   
   let title = role === 'boss' ? 'Руководитель' : (role === 'zam' ? 'Заместитель' : 'Разработчик');
   if (role === 'dev') title = degree === 'main' ? 'Главный разработчик' : (degree === 'deputy' ? 'Зам. главного' : 'Младший разработчик');
   
-  await window.addDoc(window.collection(window.db, "users"), { email, role, degree, title, fio, dob });
-  document.getElementById('newFio').value = ''; document.getElementById('newDob').value = ''; document.getElementById('newEmail').value = '';
-  alert('Сотрудник добавлен! Не забудьте создать ему пароль в Firebase (Authentication -> Users).');
+  await window.addDoc(window.collection(window.db, "users"), { login, pass, role, degree, title, fio, dob });
+  document.getElementById('newFio').value = ''; document.getElementById('newDob').value = ''; document.getElementById('newLogin').value = ''; document.getElementById('newPass').value = '';
+  alert('Сотрудник успешно добавлен!');
 }
 
 async function removeEmployee(id) { if (confirm('Удалить сотрудника?')) await window.deleteDoc(window.doc(window.db, "users", id)); }
