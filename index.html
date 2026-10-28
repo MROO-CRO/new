@@ -513,7 +513,6 @@ async function initApp() {
       renderTeam();
     });
 
-    // Восстанавливаем сессию из памяти браузера
     const savedUser = sessionStorage.getItem('cro_user');
     if (savedUser) {
       currentUser = JSON.parse(savedUser);
@@ -531,6 +530,7 @@ function closeModal(id) { document.getElementById(id).classList.remove('show'); 
 function openOuModal() { document.getElementById('ouModal').classList.add('show'); }
 function openLinkOuModal() { document.getElementById('linkOuModal').classList.add('show'); }
 
+// Функция входа (проверка по базе данных)
 async function doLogin() {
   const login = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
