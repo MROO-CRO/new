@@ -110,7 +110,7 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
 .staff-form button:hover { box-shadow: 0 0 15px rgba(0, 210, 255, 0.6); }
 #devDegreeGroup { display: none; }
 
-/* КОНТАКТЫ И ПРЕИМУЩЕСТВА (КАРТОЧКИ) */
+/* КОНТАКТЫ И ПРЕИМУЩЕСТВА */
 .contact-cards, .advantages { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px; }
 .contact-card, .adv-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 40px 30px; text-align: center; transition: transform 0.35s, border-color 0.35s; }
 .contact-card:hover, .adv-card:hover { transform: translateY(-5px); border-color: rgba(157, 107, 255, 0.7); }
@@ -142,6 +142,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .btn-cancel { background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); }
 .btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
 .btn-submit { background: linear-gradient(135deg, var(--violet), var(--blue)); color: #fff; }
+
+/* Стили для проверки данных */
+.confirm-data p { color: var(--text-dim); margin-bottom: 10px; font-size: 1rem; }
+.confirm-data strong { color: #fff; }
 
 @media (max-width: 900px) {
   .header { flex-direction: column; gap: 12px; padding: 14px 4vw; }
@@ -211,7 +215,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <div class="systems" id="systemsGrid"></div>
 </section>
 
-<!-- ПРЕИМУЩЕСТВА (КАРТОЧКИ) -->
+<!-- ПРЕИМУЩЕСТВА -->
 <section class="page" id="page-advantages">
   <h2 class="section-title">Наши преимущества</h2>
   <p class="section-sub">Почему стоит работать с нами</p>
@@ -254,8 +258,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="ou-card">
       <div class="contact-icon">🔗</div>
       <h3>Привязка ОО</h3>
-      <p>Только после регистрации ОО и одобрения заявки</p>
-      <button class="cta-button" style="margin-top: 20px; background: rgba(123, 63, 242, 0.2); border: 1px solid var(--violet-light); box-shadow: none;" onclick="alert('Временно недоступно. Дождитесь одобрения вашей заявки.')">Привязка (временно нет)</button>
+      <p>Введите уникальный код из письма</p>
+      <button class="cta-button" style="margin-top: 20px;" onclick="openLinkOuModal()">Ввести код</button>
     </div>
 
     <div class="ou-card">
@@ -266,7 +270,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
-  <!-- Панель заявок от ОУ (Видна только админам) -->
+  <!-- Панель заявок от ОУ -->
   <div class="admin-panel" id="ouAdminPanel" style="display: none; margin-top: 50px;">
     <h2>Заявки от образовательных учреждений</h2>
     <div class="staff-list" id="ouApplicationsList"></div>
@@ -278,41 +282,12 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <h2 class="section-title">Контакты</h2>
   <p class="section-sub">Свяжитесь с нами удобным способом</p>
   <div class="contact-cards">
-    <div class="contact-card">
-      <div class="contact-icon">📍</div>
-      <h3>Наш центральный офис</h3>
-      <p>Свердловская область,<br>г. Екатеринбург,<br>ул. Титова, д. 33А</p>
-    </div>
-    <div class="contact-card">
-      <div class="contact-icon">📞</div>
-      <h3>Единый информационный центр</h3>
-      <p>Звоните нам с 9:00 до 18:00</p>
-      <a href="tel:+79506573472" class="contact-link">+7 950 657 34 72</a>
-    </div>
-    <div class="contact-card">
-      <div class="contact-icon">✉️</div>
-      <h3>Единая электронная почта</h3>
-      <p>Для официальных обращений</p>
-      <a href="mailto:admin-mroo@ro.ru" class="contact-link">admin-mroo@ro.ru</a>
-    </div>
-    <div class="contact-card">
-      <div class="contact-icon">🛠️</div>
-      <h3>Техническая поддержка</h3>
-      <p>По вопросам работы сайта</p>
-      <a href="mailto:tehpod-mroo@ro.ru" class="contact-link">tehpod-mroo@ro.ru</a>
-    </div>
-    <div class="contact-card">
-      <div class="contact-icon">🔵</div>
-      <h3>Единое VK-сообщество</h3>
-      <p>Контроль информации и доступ к системам</p>
-      <a href="https://vk.ru/centerrazvitiyaobrazovania" target="_blank" class="cta-button" style="margin-top: 15px; padding: 10px 20px; font-size: 0.9rem;">Перейти в VK</a>
-    </div>
-    <div class="contact-card">
-      <div class="contact-icon">💬</div>
-      <h3>Написать нам в VK</h3>
-      <p>Оперативная связь с администрацией</p>
-      <a href="https://vk.ru/im?sel=-238986209" target="_blank" class="cta-button" style="margin-top: 15px; padding: 10px 20px; font-size: 0.9rem;">Написать</a>
-    </div>
+    <div class="contact-card"><div class="contact-icon">📍</div><h3>Наш центральный офис</h3><p>Свердловская область,<br>г. Екатеринбург,<br>ул. Титова, д. 33А</p></div>
+    <div class="contact-card"><div class="contact-icon">📞</div><h3>Единый информационный центр</h3><p>Звоните нам с 9:00 до 18:00</p><a href="tel:+79506573472" class="contact-link">+7 950 657 34 72</a></div>
+    <div class="contact-card"><div class="contact-icon">✉️</div><h3>Единая электронная почта</h3><p>Для официальных обращений</p><a href="mailto:admin-mroo@ro.ru" class="contact-link">admin-mroo@ro.ru</a></div>
+    <div class="contact-card"><div class="contact-icon">🛠️</div><h3>Техническая поддержка</h3><p>По вопросам работы сайта</p><a href="mailto:tehpod-mroo@ro.ru" class="contact-link">tehpod-mroo@ro.ru</a></div>
+    <div class="contact-card"><div class="contact-icon">🔵</div><h3>Единое VK-сообщество</h3><p>Контроль информации и доступ к системам</p><a href="https://vk.ru/centerrazvitiyaobrazovania" target="_blank" class="cta-button" style="margin-top: 15px; padding: 10px 20px; font-size: 0.9rem;">Перейти в VK</a></div>
+    <div class="contact-card"><div class="contact-icon">💬</div><h3>Написать нам в VK</h3><p>Оперативная связь с администрацией</p><a href="https://vk.ru/im?sel=-238986209" target="_blank" class="cta-button" style="margin-top: 15px; padding: 10px 20px; font-size: 0.9rem;">Написать</a></div>
   </div>
 </section>
 
@@ -400,10 +375,45 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
+<!-- Модалка ввода кода привязки -->
+<div class="modal-overlay" id="linkOuModal">
+  <div class="modal-content">
+    <h3>Привязка ОО</h3>
+    <p style="color: var(--text-dim); text-align: center; margin-bottom: 20px; font-size: 0.95rem;">Введите уникальный код, который пришел вам на почту после одобрения заявки.</p>
+    <div class="form-group"><label>Уникальный код</label><input type="text" id="linkCode" class="form-control" placeholder="Например: A1B2C3"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('linkOuModal')">Отмена</button>
+      <button class="btn-submit" onclick="verifyCode()">Проверить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка подтверждения данных -->
+<div class="modal-overlay" id="confirmDataModal">
+  <div class="modal-content">
+    <h3>Проверьте данные</h3>
+    <div class="confirm-data" id="confirmDataContent"></div>
+    <div class="form-actions" style="margin-top: 30px;">
+      <button class="btn-cancel" onclick="closeModal('confirmDataModal')">Отмена</button>
+      <button class="btn-submit" onclick="confirmLink()">Подтвердить привязку</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка приветствия -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-content" style="text-align: center; border-color: var(--success);">
+    <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+    <h3 style="color: var(--success);">Добро пожаловать в семью МРОО ЦРО!</h3>
+    <p style="color: var(--text-dim); margin: 20px 0; line-height: 1.6;">Ваше образовательное учреждение успешно привязано к системе.</p>
+    <button class="cta-button" onclick="closeModal('welcomeModal')">Отлично!</button>
+  </div>
+</div>
+
 <!-- ПОДКЛЮЧЕНИЕ FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
   const firebaseConfig = {
@@ -423,7 +433,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
   window.db = db; window.auth = auth;
   window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
-  window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
+  window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot; window.query = query; window.where = where;
   window.signInWithEmailAndPassword = signInWithEmailAndPassword; window.signOut = signOut;
   window.ADMIN_UID = ADMIN_UID;
 
@@ -434,6 +444,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 let currentUser = null;
 let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], frozen: false };
 let currentApplyVacancyTitle = "";
+let currentVerifyOuId = null; // Для хранения ID ОО при проверке кода
 
 async function initApp() {
   try {
@@ -485,6 +496,7 @@ window.addEventListener('firebaseReady', () => { initApp(); });
 function openLoginModal() { document.getElementById('loginModal').classList.add('show'); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 function openOuModal() { document.getElementById('ouModal').classList.add('show'); }
+function openLinkOuModal() { document.getElementById('linkOuModal').classList.add('show'); }
 
 async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
@@ -686,7 +698,7 @@ function renderOuApplications() {
         <small><b>Зам:</b> ${a.zam}</small>
         <small><b>Система:</b> ${a.system}</small>
         <small><b>Тел:</b> ${a.phone} | <b>Почта:</b> ${a.email}</small>
-        <small><b>Статус:</b> ${a.status === 'approved' ? 'Одобрено' : (a.status === 'rejected' ? 'Отклонено' : 'В ожидании')}</small>
+        <small><b>Статус:</b> ${a.status === 'approved' ? 'Одобрено (Код: ' + a.code + ')' : (a.status === 'rejected' ? 'Отклонено' : 'В ожидании')}</small>
       </div>
       ${a.status === 'pending' ? `
       <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -699,13 +711,54 @@ function renderOuApplications() {
 async function processOu(id, status, email, name) {
   if (!confirm(`Вы уверены, что хотите ${status === 'approved' ? 'одобрить' : 'отклонить'} заявку от ${name}?`)) return;
   
-  await window.setDoc(window.doc(window.db, "orgApplications", id), { status }, { merge: true });
+  let code = "";
+  if (status === 'approved') {
+    code = Math.random().toString(36).substring(2, 8).toUpperCase(); // Генерируем 6-значный код
+  }
+
+  await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
   
   const letter = status === 'approved' 
-    ? `Здравствуйте!\n\nВаша заявка на подключение ОО "${name}" к системе МРОО ЦРО ОДОБРЕНА.\n\nТеперь вы можете пройти привязку в разделе "Для ОУ".\n\nС уважением, администрация ЦРО.`
+    ? `Здравствуйте!\n\nВаша заявка на подключение ОО "${name}" к системе МРОО ЦРО ОДОБРЕНА.\n\nВаш уникальный код для привязки: ${code}\n\nПерейдите в раздел "Для ОУ" -> "Привязка ОО" и введите этот код.\n\nС уважением, администрация ЦРО.`
     : `Здравствуйте!\n\nК сожалению, ваша заявка на подключение ОО "${name}" была ОТКЛОНЕНА.\n\nСвяжитесь с техподдержкой для уточнения причин.\n\nС уважением, администрация ЦРО.`;
     
   alert(`Статус изменен. Письмо для отправки на ${email}:\n\n${letter}`);
+}
+
+/* ПРИВЯЗКА ОУ */
+async function verifyCode() {
+  const inputCode = document.getElementById('linkCode').value.trim().toUpperCase();
+  if (!inputCode) { alert('Введите код!'); return; }
+  
+  const found = dbData.orgApplications.find(a => a.code === inputCode && a.status === 'approved');
+  
+  if (found) {
+    currentVerifyOuId = found.id;
+    closeModal('linkOuModal');
+    
+    // Показываем данные для проверки
+    document.getElementById('confirmDataContent').innerHTML = `
+      <p><strong>Краткое название:</strong> ${found.shortName}</p>
+      <p><strong>Полное название:</strong> ${found.fullName}</p>
+      <p><strong>Директор:</strong> ${found.dir}</p>
+      <p><strong>Заместитель:</strong> ${found.zam}</p>
+      <p><strong>Система:</strong> ${found.system}</p>
+    `;
+    document.getElementById('confirmDataModal').classList.add('show');
+  } else {
+    alert('Неверный код или заявка еще не одобрена!');
+  }
+}
+
+async function confirmLink() {
+  if (!currentVerifyOuId) return;
+  
+  // Меняем статус на "Привязано"
+  await window.setDoc(window.doc(window.db, "orgApplications", currentVerifyOuId), { status: 'linked' }, { merge: true });
+  
+  closeModal('confirmDataModal');
+  document.getElementById('welcomeModal').classList.add('show');
+  document.getElementById('linkCode').value = '';
 }
 
 /* СОТРУДНИКИ */
