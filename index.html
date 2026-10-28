@@ -193,6 +193,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="dev-controls" id="devControls">
       <button class="btn-freeze" id="freezeBtn" onclick="toggleFreeze()">Заморозить сайт</button>
     </div>
+    <!-- Кнопка Войти теперь всегда видна, даже если заморожено -->
     <button class="login-btn" id="loginBtn" onclick="openLoginModal()">Войти</button>
   </div>
 </header>
@@ -597,7 +598,7 @@ function updateUI() {
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
-      teamAdminPanel.style.display = 'block'; // Руководитель тоже может управлять командой
+      teamAdminPanel.style.display = 'block';
     }
     else if (currentUser.role === 'zam') {
       devControls.classList.remove('active');
@@ -610,7 +611,7 @@ function updateUI() {
       });
     }
   } else {
-    loginBtn.style.display = 'block';
+    loginBtn.style.display = 'block'; // Кнопка входа всегда видна
     userBadge.classList.remove('active');
     devControls.classList.remove('active');
     jobsAdminPanel.style.display = 'none';
@@ -637,7 +638,10 @@ function updateFreezeBtn() {
 }
 
 function showPage(pageId) {
-  if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') return;
+  // Разрешаем переход только если не заморожено или это разработчик
+  if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') {
+    return;
+  }
   if (currentUser?.role === 'zam' && pageId !== 'jobs' && pageId !== 'home') return;
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
