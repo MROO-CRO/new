@@ -470,7 +470,7 @@ let currentVerifyOuId = null;
 
 async function initApp() {
   try {
-    // Создаем админа по умолчанию, если база пуста
+    // Автоматическое создание админа при первом запуске
     const usersSnap = await window.getDocs(window.collection(window.db, "users"));
     if (usersSnap.empty) {
       await window.addDoc(window.collection(window.db, "users"), { 
@@ -530,7 +530,6 @@ function closeModal(id) { document.getElementById(id).classList.remove('show'); 
 function openOuModal() { document.getElementById('ouModal').classList.add('show'); }
 function openLinkOuModal() { document.getElementById('linkOuModal').classList.add('show'); }
 
-// Функция входа (проверка по базе данных)
 async function doLogin() {
   const login = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
