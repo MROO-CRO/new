@@ -5,313 +5,293 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>МРОО «Центр развития образования»</title>
 <style>
-/* ================= БАЗА ================= */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg-deep: #0a0620; --bg-mid: #150a3a; --violet: #7b3ff2; --violet-light: #9d6bff;
-  --blue: #3a6bff; --blue-light: #6f9dff; --text: #ece7ff; --text-dim: #b9aee0;
-  --danger: #ff4d6d; --success: #00d2ff;
-}
-html { scroll-behavior: smooth; }
-body {
-  font-family: "Segoe UI", "Inter", sans-serif; background: linear-gradient(160deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
-  color: var(--text); min-height: 100vh; overflow-x: hidden; position: relative;
-}
-.bg-glow { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.45; z-index: 0; animation: float 14s ease-in-out infinite; pointer-events: none; }
-.glow-1 { width: 500px; height: 500px; background: var(--violet); top: -150px; left: -100px; }
-.glow-2 { width: 450px; height: 450px; background: var(--blue); bottom: -120px; right: -80px; animation-delay: -5s; }
-.glow-3 { width: 350px; height: 350px; background: #b04dff; top: 40%; left: 55%; animation-delay: -9s; opacity: 0.3; }
-@keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-30px) scale(1.1); } }
-
-.header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 6vw; backdrop-filter: blur(14px); background: rgba(10, 6, 32, 0.65); border-bottom: 1px solid rgba(157, 107, 255, 0.15); }
-.logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-.logo-mark { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, var(--violet), var(--blue)); font-weight: 800; font-size: 14px; box-shadow: 0 0 20px rgba(123, 63, 242, 0.6); flex-shrink: 0; }
-.logo-text { font-weight: 600; font-size: 15px; color: var(--text-dim); white-space: nowrap; }
-
-.nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.nav a { color: var(--text-dim); text-decoration: none; font-size: 15px; padding: 10px 16px; border-radius: 12px; transition: all 0.3s; cursor: pointer; }
-.nav a:hover { color: #fff; background: rgba(123, 63, 242, 0.2); }
-.nav a.active { color: #fff; background: linear-gradient(135deg, var(--violet), var(--blue)); box-shadow: 0 6px 20px rgba(123, 63, 242, 0.5); }
-
-.auth-area { display: flex; align-items: center; gap: 10px; margin-left: 10px; }
-.login-btn { background: transparent; border: 2px solid var(--violet-light); color: #fff; padding: 10px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
-.login-btn:hover { background: var(--violet-light); box-shadow: 0 0 15px rgba(157, 107, 255, 0.6); }
-.user-badge { display: none; align-items: center; gap: 10px; padding: 8px 16px; background: rgba(0, 210, 255, 0.1); border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 12px; font-size: 0.9rem; color: var(--success); font-weight: 600; }
-.user-badge.active { display: flex; }
-.logout-btn { background: transparent; border: none; color: var(--danger); cursor: pointer; font-weight: 700; font-size: 0.85rem; text-decoration: underline; }
-.dev-controls { display: none; gap: 10px; }
-.dev-controls.active { display: flex; }
-.btn-freeze { background: var(--danger); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
-.btn-unfreeze { background: var(--success); color: var(--bg-deep); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
-
-.page { display: none; position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; padding: 60px 24px 100px; animation: fadeIn 0.5s ease both; }
+:root { --bg: #0a0620; --violet: #7b3ff2; --blue: #3a6bff; --text: #ece7ff; --dim: #b9aee0; --danger: #ff4d6d; --success: #00d2ff; }
+body { font-family: "Segoe UI", sans-serif; background: linear-gradient(160deg, var(--bg) 0%, #150a3a 100%); color: var(--text); min-height: 100vh; padding: 20px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
+.logo { font-weight: 800; font-size: 20px; color: var(--blue); }
+.nav { display: flex; gap: 10px; flex-wrap: wrap; }
+.nav a { color: var(--dim); cursor: pointer; padding: 8px 12px; border-radius: 8px; font-size: 14px; }
+.nav a:hover, .nav a.active { background: var(--violet); color: #fff; }
+.page { display: none; }
 .page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-.tech-works { display: none; text-align: center; margin: 60px auto; background: rgba(30, 15, 70, 0.7); border: 2px solid var(--danger); padding: 60px 40px; border-radius: 24px; max-width: 700px; box-shadow: 0 0 50px rgba(255, 77, 109, 0.2); }
-body.frozen .tech-works { display: block; }
-body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, body.frozen .cta-wrap { display: none; }
-.tech-works h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--danger); margin-bottom: 20px; animation: pulseText 2s infinite; }
-.tech-works p { color: var(--text-dim); font-size: 1.2rem; line-height: 1.6; }
-@keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 109, 0.5); } 50% { opacity: 0.7; text-shadow: 0 0 30px rgba(255, 77, 109, 1); } }
-
-.hero-title { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; text-align: center; }
-.hero-title .line { display: inline-block; background: linear-gradient(90deg, var(--violet-light), var(--blue-light), var(--violet-light)); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite, slideUp 1s ease both; }
-@keyframes shine { to { background-position: 200% center; } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-.hero-subtitle { font-size: clamp(1rem, 2.2vw, 1.25rem); color: var(--text-dim); max-width: 650px; margin: 0 auto 50px; line-height: 1.6; text-align: center; animation: slideUp 1s ease 0.3s both; }
-.hero-subtitle strong { color: var(--blue-light); }
-.about-card { position: relative; text-align: left; background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 40px; backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,0.45); animation: slideUp 1s ease 0.6s both; overflow: hidden; }
-.about-card::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 100%; background: linear-gradient(90deg, transparent, var(--violet-light), var(--blue-light), transparent); animation: sweep 3s linear infinite; }
-@keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-.about-heading { font-size: 1.5rem; margin-bottom: 20px; color: #fff; }
-.about-text { color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; font-size: 1.02rem; }
-.reveal { display: inline-block; color: var(--violet-light); font-weight: 600; animation: glowPulse 3s ease-in-out infinite; }
-@keyframes glowPulse { 0%,100% { text-shadow: 0 0 6px rgba(157,107,255,0.4); } 50% { text-shadow: 0 0 18px rgba(157,107,255,0.9); } }
-.features { list-style: none; display: flex; flex-wrap: wrap; gap: 16px; margin-top: 28px; }
-.feature { display: flex; align-items: center; gap: 8px; background: rgba(123, 63, 242, 0.15); border: 1px solid rgba(157, 107, 255, 0.3); padding: 10px 16px; border-radius: 999px; font-size: 0.92rem; transition: transform 0.3s, box-shadow 0.3s; }
-.feature:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(123,63,242,0.4); }
-.cta-button { display: inline-block; margin: 44px auto 0; padding: 16px 40px; border-radius: 999px; font-weight: 600; font-size: 1rem; text-decoration: none; color: #fff; background: linear-gradient(135deg, var(--violet), var(--blue)); box-shadow: 0 10px 30px rgba(123, 63, 242, 0.5); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; border: none; font-family: inherit; text-align: center; }
-.cta-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 16px 40px rgba(123, 63, 242, 0.75); }
-.cta-wrap { text-align: center; }
-
-.section-title { text-align: center; font-size: clamp(1.8rem, 4.5vw, 2.8rem); margin-bottom: 20px; background: linear-gradient(90deg, var(--violet-light), var(--blue-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.section-sub { text-align: center; color: var(--text-dim); margin-bottom: 50px; font-size: 1.05rem; }
-
-/* СИСТЕМЫ */
-.systems { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
-.system-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 20px; padding: 28px 24px; cursor: pointer; transition: transform 0.35s, box-shadow 0.35s, border-color 0.35s; }
-.system-card:hover { transform: translateY(-8px); border-color: rgba(157, 107, 255, 0.7); box-shadow: 0 20px 50px rgba(123, 63, 242, 0.4); }
-.system-icon { width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--violet), var(--blue)); margin-bottom: 18px; }
-.system-card h3 { font-size: 1.15rem; margin-bottom: 8px; color: #fff; }
-.system-card p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.5; }
-.badge-danger { display: inline-block; margin-top: 12px; padding: 6px 14px; background: rgba(255, 77, 109, 0.15); border: 1px solid rgba(255, 77, 109, 0.5); color: #ff8095; font-size: 0.8rem; font-weight: 600; border-radius: 999px; animation: blink 2s ease-in-out infinite; }
-@keyframes blink { 0%,100% { box-shadow: 0 0 0 rgba(255,77,109,0); } 50% { box-shadow: 0 0 18px rgba(255,77,109,0.5); } }
-
-/* НАША КОМАНДА */
-.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px; }
-.team-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 30px 20px; text-align: center; transition: transform 0.35s, border-color 0.35s; }
-.team-card:hover { transform: translateY(-5px); border-color: rgba(157, 107, 255, 0.7); }
-.team-avatar { width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; display: grid; place-items: center; font-size: 2.5rem; background: linear-gradient(135deg, var(--violet), var(--blue)); border: 3px solid rgba(255,255,255,0.1); }
-.team-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
-.team-card p { color: var(--success); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
-.team-card small { color: var(--text-dim); font-size: 0.85rem; display: block; line-height: 1.4; }
-
-/* ВАКАНСИИ */
-.vacancies-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 40px; }
-.vacancy-card { display: flex; flex-direction: column; justify-content: space-between; background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 20px; padding: 30px; backdrop-filter: blur(14px); transition: transform 0.35s; }
-.vacancy-card:hover { transform: translateY(-6px); border-color: rgba(157, 107, 255, 0.7); }
-.vacancy-card h3 { font-size: 1.25rem; color: var(--blue-light); margin-bottom: 16px; border-bottom: 1px solid rgba(157,107,255,0.2); padding-bottom: 12px; }
-.vacancy-card p { color: var(--text-dim); line-height: 1.6; margin-bottom: 12px; font-size: 0.95rem; }
-.vacancy-card p strong { color: #fff; display: block; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 4px; }
-.btn-apply { margin-top: 24px; padding: 12px 24px; border-radius: 12px; font-weight: 600; color: #fff; background: transparent; border: 2px solid var(--violet-light); cursor: pointer; align-self: flex-start; transition: all 0.3s; }
-.btn-apply:hover { background: var(--violet-light); color: var(--bg-deep); }
-
-/* АДМИН ПАНЕЛЬ */
-.admin-panel { margin-top: 40px; background: rgba(30, 15, 70, 0.7); border: 1px solid var(--success); border-radius: 20px; padding: 30px; }
-.admin-panel h2 { color: #fff; margin-bottom: 20px; border-bottom: 1px solid rgba(0, 210, 255, 0.3); padding-bottom: 10px; }
-.staff-list { display: grid; gap: 10px; margin-bottom: 30px; }
-.staff-item { display: flex; justify-content: space-between; align-items: flex-start; background: rgba(0, 210, 255, 0.05); padding: 15px 20px; border-radius: 10px; border-left: 3px solid var(--success); }
-.staff-item span { font-weight: bold; color: #fff; display: block; margin-bottom: 4px;}
-.staff-item small { color: var(--text-dim); display: block; font-size: 0.85rem; line-height: 1.4; }
-.staff-form { display: grid; gap: 15px; max-width: 400px; }
-.staff-form input, .staff-form select, .staff-form textarea { padding: 12px; border-radius: 10px; background: rgba(10, 6, 32, 0.6); border: 1px solid rgba(157, 107, 255, 0.3); color: #fff; font-family: inherit; width: 100%;}
-.staff-form button { padding: 14px; border-radius: 10px; border: none; font-weight: bold; background: var(--success); color: var(--bg-deep); cursor: pointer; transition: 0.3s; }
-.staff-form button:hover { box-shadow: 0 0 15px rgba(0, 210, 255, 0.6); }
-#devDegreeGroup { display: none; }
-
-/* КОНТАКТЫ И ПРЕИМУЩЕСТВА */
-.contact-cards, .advantages { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px; }
-.contact-card, .adv-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 40px 30px; text-align: center; transition: transform 0.35s, border-color 0.35s; }
-.contact-card:hover, .adv-card:hover { transform: translateY(-5px); border-color: rgba(157, 107, 255, 0.7); }
-.contact-icon, .adv-icon { width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; background: linear-gradient(135deg, var(--violet), var(--blue)); }
-.contact-card h3, .adv-card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 16px; }
-.contact-card p, .adv-card p { color: var(--text-dim); line-height: 1.6; font-size: 1rem; }
-.contact-link { display: inline-block; margin-top: 8px; font-size: 1.1rem; font-weight: 700; color: var(--success); text-decoration: none; word-break: break-all; }
-.contact-link:hover { text-shadow: 0 0 15px rgba(0, 210, 255, 0.8); }
-
-/* ДЛЯ ОУ */
-.ou-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
-.ou-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 40px 30px; text-align: center; }
-.ou-card h3 { color: #fff; margin-bottom: 10px; }
-.ou-card p { color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem; }
-
-/* МОДАЛЬНЫЕ ОКНА */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 6, 32, 0.85); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 20px; }
-.modal-overlay.show { opacity: 1; pointer-events: all; }
-.modal-content { background: linear-gradient(160deg, #150a3a, #0a0620); border-radius: 24px; padding: 40px; transform: scale(0.8) translateY(20px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(157, 107, 255, 0.4); }
-.modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
-.modal-content h3 { text-align: center; margin-bottom: 24px; color: #fff; font-size: 1.4rem; }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; font-weight: 600; }
-.form-control { width: 100%; padding: 12px 16px; background: rgba(10, 6, 32, 0.6); border: 1px solid rgba(157, 107, 255, 0.3); border-radius: 10px; color: #fff; font-family: inherit; }
-.form-control:focus { outline: none; border-color: var(--violet-light); box-shadow: 0 0 15px rgba(157, 107, 255, 0.3); }
-textarea.form-control { resize: vertical; min-height: 80px; }
-.form-actions { display: flex; gap: 12px; margin-top: 26px; }
-.btn-cancel, .btn-submit { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: 0.3s; }
-.btn-cancel { background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); }
-.btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
-.btn-submit { background: linear-gradient(135deg, var(--violet), var(--blue)); color: #fff; }
-
-.confirm-data p { color: var(--text-dim); margin-bottom: 10px; font-size: 1rem; }
-.confirm-data strong { color: #fff; }
-
-@media (max-width: 900px) {
-  .header { flex-direction: column; gap: 12px; padding: 14px 4vw; }
-  .nav { justify-content: center; }
-  .auth-area { margin-left: 0; width: 100%; justify-content: center; flex-wrap: wrap; }
-}
+h1, h2 { margin-bottom: 20px; }
+.card { background: rgba(255,255,255,0.05); border: 1px solid rgba(157,107,255,0.3); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+button { background: var(--violet); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+button:hover { background: var(--blue); }
+input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(157,107,255,0.3); border-radius: 8px; color: #fff; font-family: inherit; }
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+.modal.show { display: flex; }
+.modal-content { background: #150a3a; padding: 30px; border-radius: 16px; max-width: 400px; width: 100%; }
+.user-badge { display: none; align-items: center; gap: 10px; }
+.user-badge.active { display: flex; }
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<div class="bg-glow glow-1"></div>
-<div class="bg-glow glow-2"></div>
-<div class="bg-glow glow-3"></div>
-
-<header class="header">
-  <div class="logo" onclick="showPage('home')">
-    <div class="logo-mark">ЦРО</div>
-    <div class="logo-text">МРОО "Центр развития образования"</div>
-  </div>
-  
+<div class="header">
+  <div class="logo">ЦРО</div>
   <nav class="nav" id="mainNav">
     <a data-page="home" class="active" onclick="showPage('home')">Главная</a>
-    <a data-page="systems" onclick="showPage('systems')">Информационные системы</a>
-    <a data-page="advantages" onclick="showPage('advantages')">Наши преимущества</a>
-    <a data-page="team" onclick="showPage('team')">Наша команда</a>
-    <a data-page="jobs" onclick="showPage('jobs')">Работа у нас</a>
-    <a data-page="ou" onclick="showPage('ou')">Для ОУ</a>
+    <a data-page="jobs" onclick="showPage('jobs')">Вакансии</a>
+    <a data-page="team" onclick="showPage('team')">Команда</a>
     <a data-page="contacts" onclick="showPage('contacts')">Контакты</a>
   </nav>
-
-  <div class="auth-area">
-    <div class="user-badge" id="userBadge">
-      <span id="userName">User</span>
-      <button class="logout-btn" onclick="logout()">Выйти</button>
-    </div>
-    <div class="dev-controls" id="devControls">
-      <button class="btn-freeze" id="freezeBtn" onclick="toggleFreeze()">Заморозить сайт</button>
-    </div>
-    <button class="login-btn" id="loginBtn" onclick="openLoginModal()">Войти</button>
+  <div>
+    <span id="userName" style="display:none; color: var(--success); margin-right: 10px;"></span>
+    <button id="loginBtn" onclick="openLogin()">Войти</button>
+    <button id="logoutBtn" class="hidden" onclick="logout()">Выйти</button>
+    <button id="freezeBtn" class="hidden" onclick="toggleFreeze()" style="background: var(--danger);">Заморозить</button>
   </div>
-</header>
+</div>
 
 <!-- ГЛАВНАЯ -->
-<section class="page active" id="page-home">
-  <div class="tech-works">
-    <h1>Идут технические работы</h1>
-    <p>Сайт временно заморожен разработчиком.<br>Пожалуйста, вернитесь чуть позже!</p>
+<div class="page active" id="page-home">
+  <div id="techWorks" style="display:none; text-align:center; padding: 50px; border: 2px solid var(--danger); border-radius: 16px; margin-bottom: 30px;">
+    <h1 style="color: var(--danger);">Идут технические работы</h1>
+    <p>Вернитесь позже</p>
   </div>
-  <div class="hero-content">
-    <h1 class="hero-title"><span class="line">Кто мы такие?</span></h1>
-    <p class="hero-subtitle">Мы — <strong>образовательный портал</strong> для школ, который объединяет педагогов, методистов и учеников в единую цифровую среду.</p>
-    <div class="about-card">
-      <h2 class="about-heading">Наша миссия</h2>
-      <p class="about-text"><span class="reveal">МРОО «Центр развития образования»</span> — это региональная общественная организация, созданная для поддержки и развития системы школьного образования.</p>
-      <ul class="features">
-        <li class="feature"><span>📚</span> Методическая поддержка школ</li>
-        <li class="feature"><span>🎓</span> Повышение квалификации педагогов</li>
-        <li class="feature"><span>🌐</span> Единая цифровая образовательная среда</li>
-      </ul>
+  <div id="mainContent">
+    <h1>Кто мы такие?</h1>
+    <p style="color: var(--dim); margin-bottom: 20px;">Образовательный портал для школ.</p>
+    <div class="card">
+      <h2>Наша миссия</h2>
+      <p>МРОО «Центр развития образования» — поддержка и развитие школьного образования.</p>
     </div>
   </div>
-</section>
+</div>
 
-<!-- СИСТЕМЫ -->
-<section class="page" id="page-systems">
-  <h2 class="section-title">Информационные системы</h2>
-  <p class="section-sub">Нажмите на карточку, чтобы открыть подробную информацию</p>
-  <div class="systems" id="systemsGrid"></div>
-</section>
-
-<!-- ПРЕИМУЩЕСТВА -->
-<section class="page" id="page-advantages">
-  <h2 class="section-title">Наши преимущества</h2>
-  <p class="section-sub">Почему стоит работать с нами</p>
-  <div class="advantages">
-    <div class="adv-card"><div class="adv-icon">🛟</div><h3>Поддержка</h3><p>Круглосуточная техническая и моральная поддержка участников проекта.</p></div>
-    <div class="adv-card"><div class="adv-icon">🏆</div><h3>Опыт</h3><p>Вы получите незабываемый опыт работы и сотрудничества с нами.</p></div>
-    <div class="adv-card"><div class="adv-icon">⚖️</div><h3>Законность</h3><p>В нашей МРОО имеются свои основные регламенты и локальные акты.</p></div>
-    <div class="adv-card"><div class="adv-icon">📈</div><h3>Карьерный рост</h3><p>Множество различных отделений и специалистов, куда можно поступить.</p></div>
+<!-- ВАКАНСИИ -->
+<div class="page" id="page-jobs">
+  <h2>Работа у нас</h2>
+  <div id="jobsAdminPanel" class="hidden card">
+    <h3>Добавить вакансию</h3>
+    <input type="text" id="vacTitle" placeholder="Название">
+    <input type="text" id="vacDesc" placeholder="Суть">
+    <input type="text" id="vacCond" placeholder="Условия">
+    <button onclick="addVacancy()">Добавить</button>
   </div>
-</section>
-
-<!-- НАША КОМАНДА -->
-<section class="page" id="page-team">
-  <h2 class="section-title">Наша команда</h2>
-  <p class="section-sub">Люди, которые делают образование лучше</p>
-  
-  <div class="team-grid" id="teamGrid"></div>
-
-  <div class="admin-panel" id="teamAdminPanel" style="display: none; margin-top: 50px;">
-    <h2>Управление командой</h2>
-    <div class="staff-list" id="teamAdminList"></div>
-    
-    <h3 style="color: #fff; margin: 20px 0 15px;">Добавить участника</h3>
-    <div class="staff-form">
-      <input type="text" id="teamFio" placeholder="ФИО (Иванов Иван)">
-      <input type="text" id="teamRole" placeholder="Должность (например: Руководитель)">
-      <input type="text" id="teamDesc" placeholder="Краткое описание (необязательно)">
-      <button onclick="addTeamMember()">Добавить в команду</button>
-    </div>
+  <div id="vacanciesList"></div>
+  <div id="appsAdminPanel" class="hidden card" style="margin-top: 20px;">
+    <h3>Заявки на работу</h3>
+    <div id="applicationsList"></div>
   </div>
-</section>
+</div>
 
-<!-- РАБОТА У НАС -->
-<section class="page" id="page-jobs">
-  <h2 class="section-title">Работа у нас</h2>
-  <p class="section-sub">Актуальные вакансии в МРОО «Центр развития образования»</p>
-  
-  <div class="admin-panel" id="jobsAdminPanel" style="display: none;">
-    <h2>Управление вакансиями</h2>
-    <div class="staff-form">
-      <input type="text" id="vacTitle" placeholder="Название вакансии">
-      <input type="text" id="vacDesc" placeholder="Суть работы">
-      <input type="text" id="vacCond" placeholder="Условия работы">
-      <button onclick="addVacancy()">Добавить вакансию</button>
-    </div>
+<!-- КОМАНДА -->
+<div class="page" id="page-team">
+  <h2>Наша команда</h2>
+  <div id="teamList"></div>
+  <div id="teamAdminPanel" class="hidden card" style="margin-top: 20px;">
+    <h3>Добавить в команду</h3>
+    <input type="text" id="teamFio" placeholder="ФИО">
+    <input type="text" id="teamRole" placeholder="Должность">
+    <button onclick="addTeamMember()">Добавить</button>
   </div>
-  <div class="vacancies-grid" id="vacanciesGrid"></div>
-
-  <div class="admin-panel" id="applicationsAdminPanel" style="display: none; margin-top: 50px; border-color: var(--violet-light);">
-    <h2>Заявки на трудоустройство</h2>
-    <div class="staff-list" id="applicationsList"></div>
-  </div>
-</section>
-
-<!-- ДЛЯ ОУ -->
-<section class="page" id="page-ou">
-  <h2 class="section-title">Для образовательных учреждений</h2>
-  <p class="section-sub">Подключение школ к единой цифровой среде</p>
-  
-  <div class="ou-grid">
-    <div class="ou-card">
-      <div class="contact-icon">🔗</div>
-      <h3>Привязка ОО</h3>
-      <p>Введите уникальный код из письма</p>
-      <button class="cta-button" style="margin-top: 20px;" onclick="openLinkOuModal()">Ввести код</button>
-    </div>
-
-    <div class="ou-card">
-      <div class="contact-icon">📝</div>
-      <h3>Регистрация ОО</h3>
-      <p>Заполните заявку на подключение вашей школы</p>
-      <button class="cta-button" style="margin-top: 20px;" onclick="openOuModal()">Регистрация ОО</button>
-    </div>
-  </div>
-
-  <div class="admin-panel" id="ouAdminPanel" style="display: none; margin-top: 50px;">
-    <h2>Заявки от образовательных учреждений</h2>
-    <div class="staff-list" id="ouApplicationsList"></div>
-  </div>
-</section>
+</div>
 
 <!-- КОНТАКТЫ -->
-<section class="page" id="page-contacts">
-  <h2 class="section-title">Контакты</h2>
-  <p class="section-sub">Свяжитесь с нами удобным способом</p>
-  <div class="contact-cards">
-    <div class="contact-card"><div class="contact-icon">📍</div><h3>Наш центральный офис</h3><p>Свердловская область,<br>г. Екатеринбург,<br>ул. Титова, д. 33А</p></div>
-    <div class="contact-card"><div class="contact-icon">📞</div><h3>Единый информационный центр</h3><p>Звоните нам с 9:00 до 18:00</p><a href="tel:+79506573472" class="contact-link">+7 950 657 34 72</a></div>
-    <div class="contact-card"><div class="contact-icon">✉️</div><h3>Единая электронная почта</h3><p>Для официаль
+<div class="page" id="page-contacts">
+  <h2>Контакты</h2>
+  <div class="card"><h3>Офис</h3><p>г. Екатеринбург, ул. Титова, д. 33А</p></div>
+  <div class="card"><h3>Телефон</h3><p>+7 950 657 34 72</p></div>
+  <div class="card"><h3>Почта</h3><p>admin-mroo@ro.ru</p></div>
+</div>
+
+<!-- МОДАЛКА ВХОДА -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h2>Вход</h2>
+    <input type="text" id="loginUser" placeholder="Логин (admin)">
+    <input type="password" id="loginPass" placeholder="Пароль (admin)">
+    <button onclick="doLogin()" style="width: 100%;">Войти</button>
+    <button onclick="closeModal()" style="background: transparent; color: var(--dim); width: 100%; margin-top: 10px;">Отмена</button>
+  </div>
+</div>
+
+<!-- МОДАЛКА ЗАЯВКИ -->
+<div class="modal" id="applyModal">
+  <div class="modal-content">
+    <h2>Анкета</h2>
+    <input type="text" id="appFio" placeholder="ФИО">
+    <input type="date" id="appDob">
+    <input type="text" id="appExp" placeholder="Опыт">
+    <button onclick="submitApplication()" style="width: 100%;">Отправить</button>
+    <button onclick="closeModal()" style="background: transparent; color: var(--dim); width: 100%; margin-top: 10px;">Отмена</button>
+  </div>
+</div>
+
+<script>
+// --- ДАННЫЕ ---
+let db = JSON.parse(localStorage.getItem('cro_db')) || {
+  users: [{ login: 'admin', pass: 'admin', role: 'dev', title: 'Главный разработчик' }],
+  vacancies: [],
+  applications: [],
+  team: [],
+  frozen: false
+};
+let currentUser = null;
+let currentApplyVacancy = "";
+
+function save() { localStorage.setItem('cro_db', JSON.stringify(db)); renderAll(); }
+
+// --- НАВИГАЦИЯ ---
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav a').forEach(a => a.classList.toggle('active', a.dataset.page === id));
+}
+
+// --- ВХОД ---
+function openLogin() { document.getElementById('loginModal').classList.add('show'); }
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('show')); }
+
+function doLogin() {
+  const login = document.getElementById('loginUser').value;
+  const pass = document.getElementById('loginPass').value;
+  const user = db.users.find(u => u.login === login && u.pass === pass);
+  if (user) {
+    currentUser = user;
+    closeModal();
+    renderAll();
+    alert('Добро пожаловать, ' + user.title);
+  } else {
+    alert('Неверный логин или пароль');
+  }
+}
+
+function logout() {
+  currentUser = null;
+  renderAll();
+}
+
+// --- ЗАМОРОЗКА ---
+function toggleFreeze() {
+  if (currentUser.role !== 'dev') return;
+  db.frozen = !db.frozen;
+  save();
+}
+
+// --- РЕНДЕР ---
+function renderAll() {
+  // Пользователь
+  const userName = document.getElementById('userName');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const freezeBtn = document.getElementById('freezeBtn');
+  const jobsAdmin = document.getElementById('jobsAdminPanel');
+  const appsAdmin = document.getElementById('appsAdminPanel');
+  const teamAdmin = document.getElementById('teamAdminPanel');
+
+  if (currentUser) {
+    userName.style.display = 'inline';
+    userName.textContent = currentUser.title;
+    loginBtn.style.display = 'none';
+    logoutBtn.classList.remove('hidden');
+    
+    if (currentUser.role === 'dev') {
+      freezeBtn.classList.remove('hidden');
+      freezeBtn.textContent = db.frozen ? 'Разморозить' : 'Заморозить';
+      jobsAdmin.classList.remove('hidden');
+      appsAdmin.classList.remove('hidden');
+      teamAdmin.classList.remove('hidden');
+    } else {
+      freezeBtn.classList.add('hidden');
+      jobsAdmin.classList.add('hidden');
+      appsAdmin.classList.add('hidden');
+      teamAdmin.classList.add('hidden');
+    }
+  } else {
+    userName.style.display = 'none';
+    loginBtn.style.display = 'inline';
+    logoutBtn.classList.add('hidden');
+    freezeBtn.classList.add('hidden');
+    jobsAdmin.classList.add('hidden');
+    appsAdmin.classList.add('hidden');
+    teamAdmin.classList.add('hidden');
+  }
+
+  // Заморозка
+  document.getElementById('techWorks').style.display = db.frozen ? 'block' : 'none';
+  document.getElementById('mainContent').style.display = db.frozen && currentUser?.role !== 'dev' ? 'none' : 'block';
+
+  // Вакансии
+  const vacList = document.getElementById('vacanciesList');
+  if (db.vacancies.length === 0) vacList.innerHTML = '<p>Нет вакансий</p>';
+  else vacList.innerHTML = db.vacancies.map((v, i) => `
+    <div class="card">
+      <h3>${v.title}</h3>
+      <p>${v.desc} | ${v.cond}</p>
+      ${currentUser ? `<button onclick="openApply('${v.title}')">Откликнуться</button>` : ''}
+      ${currentUser?.role === 'dev' ? `<button onclick="delVacancy(${i})" style="background: var(--danger);">Удалить</button>` : ''}
+    </div>
+  `).join('');
+
+  // Заявки
+  const appsList = document.getElementById('applicationsList');
+  if (db.applications.length === 0) appsList.innerHTML = '<p>Нет заявок</p>';
+  else appsList.innerHTML = db.applications.map((a, i) => `
+    <div class="card">
+      <p><b>${a.fio}</b> — ${a.vacancy}</p>
+      <button onclick="delApp(${i})" style="background: var(--danger);">Удалить</button>
+    </div>
+  `).join('');
+
+  // Команда
+  const teamList = document.getElementById('teamList');
+  if (db.team.length === 0) teamList.innerHTML = '<p>Нет участников</p>';
+  else teamList.innerHTML = db.team.map((m, i) => `
+    <div class="card">
+      <h3>${m.fio}</h3>
+      <p>${m.role}</p>
+      ${currentUser?.role === 'dev' ? `<button onclick="delTeam(${i})" style="background: var(--danger);">Удалить</button>` : ''}
+    </div>
+  `).join('');
+}
+
+// --- ДЕЙСТВИЯ ---
+function addVacancy() {
+  const title = document.getElementById('vacTitle').value;
+  const desc = document.getElementById('vacDesc').value;
+  const cond = document.getElementById('vacCond').value;
+  if (!title || !desc || !cond) return alert('Заполните поля');
+  db.vacancies.push({ title, desc, cond });
+  save();
+}
+
+function delVacancy(i) { db.vacancies.splice(i, 1); save(); }
+
+function openApply(title) {
+  currentApplyVacancy = title;
+  document.getElementById('applyModal').classList.add('show');
+}
+
+function submitApplication() {
+  const fio = document.getElementById('appFio').value;
+  const dob = document.getElementById('appDob').value;
+  const exp = document.getElementById('appExp').value;
+  if (!fio || !dob || !exp) return alert('Заполните поля');
+  db.applications.push({ fio, dob, exp, vacancy: currentApplyVacancy });
+  save();
+  closeModal();
+  alert('Заявка отправлена');
+}
+
+function delApp(i) { db.applications.splice(i, 1); save(); }
+
+function addTeamMember() {
+  const fio = document.getElementById('teamFio').value;
+  const role = document.getElementById('teamRole').value;
+  if (!fio || !role) return alert('Заполните поля');
+  db.team.push({ fio, role });
+  save();
+}
+
+function delTeam(i) { db.team.splice(i, 1); save(); }
+
+// --- СТАРТ ---
+renderAll();
+</script>
+</body>
+</html>
