@@ -434,8 +434,8 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
   <div class="contact-cards">
     <div class="contact-card"><div class="contact-icon">📍</div><h3>Наш центральный офис</h3><p>Свердловская область,<br>г. Екатеринбург,<br>ул. Титова, д. 33А</p></div>
     <div class="contact-card"><div class="contact-icon">📞</div><h3>Единый информационный центр</h3><p>Звоните нам с 10:00 до 18:00</p><a href="tel:+79506573472" class="contact-link">+7 950 657 34 72</a></div>
-    <div class="contact-card"><div class="contact-icon">✉️</div><h3>Единая электронная почта</h3><p>Для официальных обращений</p><a href="mailto:mroo.croof@mail.ru" class="contact-link">mroo.croof@mail.ru</a></div>
-    <div class="contact-card"><div class="contact-icon">🛠️</div><h3>Техническая поддержка</h3><p>По вопросам работы сайта</p><a href="mailto:tehpod-mroo@ro.ru" class="contact-link">tehpod-mroo@ro.ru</a></div>
+    <div class="contact-card"><div class="contact-icon">✉️</div><h3>Единая электронная почта</h3><p>Для официальных обращений</p><a href="mailto:admin-mroo@ro.ru" class="contact-link">admin-mroo@ro.ru</a></div>
+    <div class="contact-card"><div class="contact-icon">🛠️</div><h3>Техническая поддержка</h3><p>По вопросам работы сайта</p><a href="mailto:admin-mroo@ro.ru" class="contact-link">admin-mroo@ro.ru</a></div>
     <div class="contact-card"><div class="contact-icon">🔵</div><h3>Единое VK-сообщество</h3><p>Контроль информации и доступ к системам</p><a href="https://vk.ru/mroocroo" target="_blank" class="login-btn" style="margin-top: 15px; display: inline-block; padding: 10px 20px; text-decoration: none;">Перейти в VK</a></div>
   </div>
 </section>
@@ -1162,9 +1162,33 @@ async function processOu(id, status) {
   
   if (status === 'approved') {
     code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    text = `Здравствуйте!\nВаша заявка на подключение "${app.shortName}" ОДОБРЕНА.\nКод для привязки: ${code}\n\nС уважением, ЦРО.`;
+    
+    // Формируем список данных школы
+    const schoolData = `
+• Полное название: ${app.fullName || 'Не указано'}
+• Краткое название: ${app.shortName}
+• ФИО Директора: ${app.dir}
+• Телефон: ${app.phone || 'Не указан'}
+• Почта: ${app.email}
+• ВК директора: ${app.vk || 'Не указан'}
+• Система: ${app.system}
+• Код привязки: ${code}`;
+
+    text = `Здравствуйте! Поздравляем!
+Ваша заявка под номером ${app.ticket} ОДОБРЕНА.
+Данные вашей школы:
+${schoolData}
+
+*Если вдруг вы заметили ошибку в данных школы, то сообщите нам на этот адрес электронной почты: admin-mroo@ro.ru
+
+С уважением,
+МРОО "Центр развития образования"`;
   } else {
-    text = `Здравствуйте!\nК сожалению, ваша заявка "${app.shortName}" ОТКЛОНЕНА.\n\nС уважением, ЦРО.`;
+    text = `Здравствуйте!
+К сожалению, ваша заявка под номером ${app.ticket} ОТКЛОНЕНА.
+
+С уважением,
+МРОО "Центр развития образования"`;
   }
 
   try {
