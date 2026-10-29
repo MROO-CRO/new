@@ -10,7 +10,7 @@
 :root {
   --bg-deep: #0a0620; --bg-mid: #150a3a; --violet: #7b3ff2; --violet-light: #9d6bff;
   --blue: #3a6bff; --blue-light: #6f9dff; --text: #ece7ff; --text-dim: #b9aee0;
-  --danger: #ff4d6d; --success: #00d2ff;
+  --danger: #ff4d6d; --success: #00d2ff; --gold: #ffd700;
 }
 html { scroll-behavior: smooth; }
 body {
@@ -108,14 +108,28 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
 .info-block li:hover { background: rgba(123,63,242,0.25); transform: translateX(6px); }
 .info-block li strong { color: var(--blue-light); }
 
-/* НАША КОМАНДА */
-.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px; }
-.team-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 30px 20px; text-align: center; transition: transform 0.35s, border-color 0.35s; }
+/* НАША КОМАНДА (ИЕРАРХИЯ) */
+.team-hierarchy { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 40px; }
+.team-boss { width: 100%; max-width: 350px; }
+.team-lower { display: flex; gap: 24px; width: 100%; justify-content: center; flex-wrap: wrap; }
+.team-lower > div { flex: 1; min-width: 250px; max-width: 350px; }
+
+.team-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 24px; padding: 30px 20px; text-align: center; transition: transform 0.35s, border-color 0.35s; position: relative; }
 .team-card:hover { transform: translateY(-5px); border-color: rgba(157, 107, 255, 0.7); }
+
+/* Стили для Руководителя (Золотой) */
+.team-boss .team-card { border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); padding-top: 50px; }
+.team-boss .team-card:hover { box-shadow: 0 0 50px rgba(255, 215, 0, 0.4); }
+.crown { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 3rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); animation: float 3s ease-in-out infinite; }
+.team-boss .team-card h3 { color: var(--gold); font-size: 1.4rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+
+/* Аватарки */
 .team-avatar { width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; display: grid; place-items: center; font-size: 2.5rem; background: linear-gradient(135deg, var(--violet), var(--blue)); border: 3px solid rgba(255,255,255,0.1); overflow: hidden; }
+.team-boss .team-avatar { border: 3px solid var(--gold); width: 120px; height: 120px; }
 .team-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.team-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
-.team-card p { color: var(--success); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+
+.team-card p { color: var(--success); font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; }
+.team-boss .team-card p { color: var(--gold); }
 .team-card small { color: var(--text-dim); font-size: 0.85rem; display: block; line-height: 1.4; }
 
 /* НАШИ ОО */
@@ -279,7 +293,9 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <h2 class="section-title">Наша команда</h2>
   <p class="section-sub">Люди, которые делают образование лучше</p>
   
-  <div class="team-grid" id="teamGrid"></div>
+  <div class="team-hierarchy" id="teamHierarchy">
+    <!-- Заполняется через JS -->
+  </div>
 
   <div class="admin-panel" id="teamAdminPanel" style="display: none; margin-top: 50px;">
     <h2>Управление командой</h2>
@@ -288,7 +304,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <h3 style="color: #fff; margin: 20px 0 15px;">Добавить участника</h3>
     <div class="staff-form">
       <input type="text" id="teamFio" placeholder="ФИО (Иванов Иван)">
-      <input type="text" id="teamRole" placeholder="Должность (например: Руководитель)">
+      <select id="teamRole" class="form-control" style="margin-bottom: 0;">
+        <option value="Руководитель">Руководитель</option>
+        <option value="Заместитель руководителя">Заместитель руководителя</option>
+        <option value="Председатель">Председатель</option>
+      </select>
       <input type="text" id="teamPhoto" placeholder="Ссылка на фото (URL, необязательно)">
       <input type="text" id="teamDesc" placeholder="Краткое описание (необязательно)">
       <button onclick="addTeamMember()">Добавить в команду</button>
@@ -508,7 +528,8 @@ function loadData() {
     dbData.users = [{ login: 'admin', pass: 'admin', role: 'dev', degree: 'main', title: 'Главный разработчик', fio: 'Системный администратор', dob: '1990-01-01' }];
     saveData();
   }
-  const savedUser = sessionStorage.getItem('cro_user');
+  // ИСПОЛЬЗУЕМ LOCALSTORAGE ВМЕСТО SESSIONSTORAGE, ЧТОБЫ НЕ ВЫХОДИЛО ПРИ ПЕРЕЗАГРУЗКЕ
+  const savedUser = localStorage.getItem('cro_user');
   if (savedUser) currentUser = JSON.parse(savedUser);
 }
 
@@ -624,7 +645,7 @@ function doLogin() {
   
   if (user) {
     currentUser = user;
-    sessionStorage.setItem('cro_user', JSON.stringify(user));
+    localStorage.setItem('cro_user', JSON.stringify(user));
     closeModal('loginModal');
     document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
@@ -637,7 +658,7 @@ function doLogin() {
 
 function logout() {
   currentUser = null;
-  sessionStorage.removeItem('cro_user');
+  localStorage.removeItem('cro_user');
   updateUI();
   showPage('home');
 }
@@ -717,7 +738,7 @@ function updateUI() {
   renderVacancies();
   renderApplications();
   renderOuApplications();
-  renderTeam();
+  renderTeamHierarchy();
   renderSystems();
   renderOOList();
 }
@@ -780,22 +801,45 @@ function openSystem(id) {
   showPage('system-detail');
 }
 
-// ================= НАША КОМАНДА =================
-function renderTeam() {
-  const grid = document.getElementById('teamGrid');
-  if (!grid) return;
-  if (dbData.team.length === 0) {
-    grid.innerHTML = '<p style="color: var(--text-dim); text-align: center; width: 100%; grid-column: 1/-1;">Информация о команде скоро появится.</p>';
-    return;
-  }
-  grid.innerHTML = dbData.team.map(m => `
-    <div class="team-card">
-      <div class="team-avatar">${m.photo ? `<img src="${m.photo}" alt="${m.fio}">` : '👤'}</div>
-      <h3>${m.fio}</h3>
-      <p>${m.role}</p>
-      <small>${m.desc || ''}</small>
+// ================= НАША КОМАНДА (ИЕРАРХИЯ) =================
+function renderTeamHierarchy() {
+  const container = document.getElementById('teamHierarchy');
+  if (!container) return;
+
+  const boss = dbData.team.find(m => m.role === 'Руководитель');
+  const deputy = dbData.team.find(m => m.role === 'Заместитель руководителя');
+  const chairman = dbData.team.find(m => m.role === 'Председатель');
+
+  const createCard = (person, isBoss = false) => {
+    if (!person) {
+      return `
+        <div class="team-card" style="opacity: 0.5;">
+          <div class="team-avatar">👤</div>
+          <h3>Вакантно</h3>
+          <p>${isBoss ? 'Руководитель' : 'Должность'}</p>
+        </div>
+      `;
+    }
+    return `
+      <div class="team-card">
+        ${isBoss ? '<div class="crown">👑</div>' : ''}
+        <div class="team-avatar">${person.photo ? `<img src="${person.photo}" alt="${person.fio}">` : '👤'}</div>
+        <h3>${person.fio}</h3>
+        <p>${person.role}</p>
+        <small>${person.desc || ''}</small>
+      </div>
+    `;
+  };
+
+  container.innerHTML = `
+    <div class="team-boss">
+      ${createCard(boss, true)}
     </div>
-  `).join('');
+    <div class="team-lower">
+      <div>${createCard(deputy)}</div>
+      <div>${createCard(chairman)}</div>
+    </div>
+  `;
 }
 
 function renderTeamAdminList() {
@@ -803,7 +847,7 @@ function renderTeamAdminList() {
   if (!list) return;
   if (dbData.team.length === 0) { list.innerHTML = '<p style="color: var(--text-dim);">Участников пока нет.</p>'; return; }
   list.innerHTML = dbData.team.map(m => `
-    <div class="staff-item" style="border-left-color: var(--success);">
+    <div class="staff-item" style="border-left-color: ${m.role === 'Руководитель' ? 'var(--gold)' : 'var(--success)'};">
       <div>
         <span>${m.fio}</span>
         <small><b>Должность:</b> ${m.role}</small>
@@ -816,16 +860,26 @@ function renderTeamAdminList() {
 
 function addTeamMember() {
   const fio = document.getElementById('teamFio').value.trim();
-  const role = document.getElementById('teamRole').value.trim();
+  const role = document.getElementById('teamRole').value;
   const photo = document.getElementById('teamPhoto').value.trim();
   const desc = document.getElementById('teamDesc').value.trim();
   
-  if (!fio || !role) { alert('Заполните ФИО и Должность!'); return; }
+  if (!fio) { alert('Заполните ФИО!'); return; }
+
+  // Проверка, чтобы не было двух руководителей
+  if (role === 'Руководитель' && dbData.team.some(m => m.role === 'Руководитель')) {
+    alert('Руководитель уже назначен!'); return;
+  }
+  if (role === 'Заместитель руководителя' && dbData.team.some(m => m.role === 'Заместитель руководителя')) {
+    alert('Заместитель уже назначен!'); return;
+  }
+  if (role === 'Председатель' && dbData.team.some(m => m.role === 'Председатель')) {
+    alert('Председатель уже назначен!'); return;
+  }
   
   dbData.team.push({ id: Date.now(), fio, role, photo, desc });
   saveData();
   document.getElementById('teamFio').value = '';
-  document.getElementById('teamRole').value = '';
   document.getElementById('teamPhoto').value = '';
   document.getElementById('teamDesc').value = '';
 }
@@ -1088,4 +1142,4 @@ window.onload = () => {
 };
 </script>
 </body>
-</html>
+                              </html>
