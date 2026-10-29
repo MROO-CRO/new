@@ -98,6 +98,15 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
 .team-card p { color: var(--success); font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
 .team-card small { color: var(--text-dim); font-size: 0.85rem; display: block; line-height: 1.4; }
 
+/* НАШИ ОО */
+.oo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 40px; }
+.oo-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 20px; padding: 28px 24px; transition: transform 0.35s, border-color 0.35s; }
+.oo-card:hover { transform: translateY(-6px); border-color: rgba(157, 107, 255, 0.7); }
+.oo-card h3 { color: var(--blue-light); font-size: 1.15rem; margin-bottom: 12px; }
+.oo-card p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.6; margin-bottom: 8px; }
+.oo-card p strong { color: #fff; }
+.oo-card .oo-system { color: var(--success); font-weight: 600; font-size: 0.85rem; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(157,107,255,0.2); display: block; }
+
 /* ВАКАНСИИ */
 .vacancies-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 40px; }
 .vacancy-card { display: flex; flex-direction: column; justify-content: space-between; background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(157, 107, 255, 0.25); border-radius: 20px; padding: 30px; backdrop-filter: blur(14px); transition: transform 0.35s; }
@@ -181,6 +190,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <a data-page="systems" onclick="showPage('systems')">Информационные системы</a>
     <a data-page="advantages" onclick="showPage('advantages')">Наши преимущества</a>
     <a data-page="team" onclick="showPage('team')">Наша команда</a>
+    <a data-page="oo" onclick="showPage('oo')">Наши ОО</a>
     <a data-page="jobs" onclick="showPage('jobs')">Работа у нас</a>
     <a data-page="ou" onclick="showPage('ou')">Для ОУ</a>
     <a data-page="contacts" onclick="showPage('contacts')">Контакты</a>
@@ -258,6 +268,13 @@ textarea.form-control { resize: vertical; min-height: 80px; }
       <button onclick="addTeamMember()">Добавить в команду</button>
     </div>
   </div>
+</section>
+
+<!-- НАШИ ОО -->
+<section class="page" id="page-oo">
+  <h2 class="section-title">Наши образовательные организации</h2>
+  <p class="section-sub">Школы, подключенные к системе МРОО ЦРО</p>
+  <div class="oo-grid" id="ooGrid"></div>
 </section>
 
 <!-- РАБОТА У НАС -->
@@ -440,10 +457,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- ================= ПОДКЛЮЧЕНИЕ FIREBASE ================= -->
+<!-- ================= ПОДКЛЮЧЕНИЕ FIREBASE И EMAILJS ================= -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyC5B2mAOHU9rKVfvXLbcFWFSDbJiiBxMT8",
@@ -457,9 +475,13 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // Инициализация EmailJS
+  emailjs.init("GZ_PPV-Vef4hfwGuC");
+
   window.db = db;
-  window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
+  window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc; window.updateDoc = updateDoc;
   window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
+  window.emailjs = emailjs;
 
   window.dispatchEvent(new Event('firebaseReady'));
 </script>
@@ -474,7 +496,6 @@ let currentVerifyOuId = null;
 // ================= ИНИЦИАЛИЗАЦИЯ =================
 async function initApp() {
   try {
-    // Проверяем, есть ли админ
     const usersSnap = await window.getDocs(window.collection(window.db, "users"));
     if (usersSnap.empty) {
       await window.addDoc(window.collection(window.db, "users"), { 
@@ -482,48 +503,42 @@ async function initApp() {
       });
     }
 
-    // Подписка на настройки (заморозка)
     window.onSnapshot(window.doc(window.db, "settings", "main"), (docSnap) => {
       dbData.frozen = docSnap.exists() ? docSnap.data().frozen : false;
       updateUI();
     });
 
-    // Подписка на пользователей
     window.onSnapshot(window.collection(window.db, "users"), (snapshot) => {
       dbData.users = [];
       snapshot.forEach(doc => dbData.users.push({ id: doc.id, ...doc.data() }));
       updateUI();
     });
 
-    // Подписка на вакансии
     window.onSnapshot(window.collection(window.db, "vacancies"), (snapshot) => {
       dbData.vacancies = [];
       snapshot.forEach(doc => dbData.vacancies.push({ id: doc.id, ...doc.data() }));
       renderVacancies();
     });
 
-    // Подписка на заявки
     window.onSnapshot(window.collection(window.db, "applications"), (snapshot) => {
       dbData.applications = [];
       snapshot.forEach(doc => dbData.applications.push({ id: doc.id, ...doc.data() }));
       renderApplications();
     });
 
-    // Подписка на заявки от ОУ
     window.onSnapshot(window.collection(window.db, "orgApplications"), (snapshot) => {
       dbData.orgApplications = [];
       snapshot.forEach(doc => dbData.orgApplications.push({ id: doc.id, ...doc.data() }));
       renderOuApplications();
+      renderOOList(); // Обновляем список ОО
     });
 
-    // Подписка на команду
     window.onSnapshot(window.collection(window.db, "team"), (snapshot) => {
       dbData.team = [];
       snapshot.forEach(doc => dbData.team.push({ id: doc.id, ...doc.data() }));
       renderTeam();
     });
 
-    // Восстановление сессии
     const savedUser = sessionStorage.getItem('cro_user');
     if (savedUser) {
       currentUser = JSON.parse(savedUser);
@@ -646,6 +661,7 @@ function updateUI() {
   
   renderStaffList();
   renderTeamAdminList();
+  renderOOList(); // Отрисовка списка ОО
 }
 
 // ================= ЗАМОРОЗКА =================
@@ -713,6 +729,30 @@ async function addTeamMember() {
 
 async function deleteTeamMember(id) {
   if (confirm('Удалить участника из команды?')) await window.deleteDoc(window.doc(window.db, "team", id));
+}
+
+// ================= НАШИ ОО =================
+function renderOOList() {
+  const grid = document.getElementById('ooGrid');
+  if (!grid) return;
+  
+  // Фильтруем только привязанные ОО (status === 'linked')
+  const linkedOOs = dbData.orgApplications.filter(a => a.status === 'linked');
+  
+  if (linkedOOs.length === 0) {
+    grid.innerHTML = '<p style="color: var(--text-dim); text-align: center; width: 100%; grid-column: 1/-1;">Пока нет подключенных организаций.</p>';
+    return;
+  }
+  
+  grid.innerHTML = linkedOOs.map(o => `
+    <div class="oo-card">
+      <h3>${o.shortName}</h3>
+      <p><strong>Полное название:</strong> ${o.fullName}</p>
+      <p><strong>Директор:</strong> ${o.dir}</p>
+      <p><strong>Телефон:</strong> ${o.phone}</p>
+      <span class="oo-system">Система: ${o.system}</span>
+    </div>
+  `).join('');
 }
 
 // ================= ВАКАНСИИ =================
@@ -810,7 +850,7 @@ function renderOuApplications() {
   if (dbData.orgApplications.length === 0) { list.innerHTML = '<p style="color: var(--text-dim);">Новых заявок нет.</p>'; return; }
   
   list.innerHTML = dbData.orgApplications.map(a => `
-    <div class="staff-item" style="border-left-color: ${a.status === 'approved' ? 'var(--success)' : (a.status === 'rejected' ? 'var(--danger)' : 'orange')};">
+    <div class="staff-item" style="border-left-color: ${a.status === 'approved' ? 'var(--success)' : (a.status === 'rejected' ? 'var(--danger)' : (a.status === 'linked' ? 'var(--blue-light)' : 'orange'))};">
       <div>
         <span>${a.shortName} (${a.fullName})</span>
         <small><b>Директор:</b> ${a.dir}</small>
@@ -827,21 +867,38 @@ function renderOuApplications() {
     </div>`).join('');
 }
 
+// ================= ОТПРАВКА ПИСЕМ И СТАТУСЫ ОУ =================
 async function processOu(id, status, email, name) {
   if (!confirm(`Вы уверены, что хотите ${status === 'approved' ? 'одобрить' : 'отклонить'} заявку от ${name}?`)) return;
   
   let code = "";
+  let messageText = "";
+  
   if (status === 'approved') {
     code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    messageText = `Ваш уникальный код для привязки: ${code}. Перейдите в раздел "Для ОУ" -> "Привязка ОО" и введите этот код.`;
+  } else {
+    messageText = `Свяжитесь с техподдержкой (tehpod-mroo@ro.ru) для уточнения причин отказа.`;
   }
 
+  // Обновляем статус в Firebase
   await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
   
-  const letter = status === 'approved' 
-    ? `Здравствуйте!\n\nВаша заявка на подключение ОО "${name}" к системе МРОО ЦРО ОДОБРЕНА.\n\nВаш уникальный код для привязки: ${code}\n\nПерейдите в раздел "Для ОУ" -> "Привязка ОО" и введите этот код.\n\nС уважением, администрация ЦРО.`
-    : `Здравствуйте!\n\nК сожалению, ваша заявка на подключение ОО "${name}" была ОТКЛОНЕНА.\n\nСвяжитесь с техподдержкой для уточнения причин.\n\nС уважением, администрация ЦРО.`;
-    
-  alert(`Статус изменен. Письмо для отправки на ${email}:\n\n${letter}`);
+  // Отправляем письмо через EmailJS
+  const templateParams = {
+    to_email: email,
+    org_name: name,
+    status: status === 'approved' ? 'ОДОБРЕНА' : 'ОТКЛОНЕНА',
+    message: messageText
+  };
+
+  try {
+    await window.emailjs.send('service_sgodeoi', 'template_qx2nuk8', templateParams);
+    alert(`Статус изменен. Письмо успешно отправлено на ${email}`);
+  } catch (error) {
+    console.error('Ошибка отправки:', error);
+    alert(`Статус изменен, но письмо не отправилось. Ошибка: ${error.text || error.message}`);
+  }
 }
 
 // ================= ПРИВЯЗКА ОУ =================
@@ -869,7 +926,10 @@ async function verifyCode() {
 
 async function confirmLink() {
   if (!currentVerifyOuId) return;
+  
+  // Меняем статус на "Привязано"
   await window.setDoc(window.doc(window.db, "orgApplications", currentVerifyOuId), { status: 'linked' }, { merge: true });
+  
   closeModal('confirmDataModal');
   document.getElementById('welcomeModal').classList.add('show');
   document.getElementById('linkCode').value = '';
@@ -930,4 +990,4 @@ function renderSystems() {
 }
 </script>
 </body>
-  </html>
+</html>
