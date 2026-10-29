@@ -96,8 +96,6 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 .detail-danger { display: inline-block; padding: 10px 20px; background: rgba(255, 77, 109, 0.15); border: 1px solid rgba(255, 77, 109, 0.5); color: #ff8095; border-radius: 12px; font-weight: 600; margin-bottom: 30px; }
 .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(123, 63, 242, 0.15); border: 1px solid rgba(176, 107, 255, 0.35); color: var(--text); border-radius: 12px; cursor: pointer; font-size: 0.95rem; font-family: inherit; margin-bottom: 30px; transition: all 0.3s; }
 .back-btn:hover { background: rgba(123, 63, 242, 0.3); transform: translateX(-4px); }
-.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 40px; }
-.gallery img { width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 16px; border: 1px solid rgba(176, 107, 255, 0.3); background: rgba(30,15,70,0.6); }
 .info-block { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 20px; padding: 30px; backdrop-filter: blur(14px); margin-bottom: 24px; }
 .info-block h2 { font-size: 1.3rem; margin-bottom: 16px; color: #fff; }
 .info-block ul { list-style: none; display: grid; gap: 10px; margin-top: 10px; }
@@ -198,6 +196,13 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 .ou-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
 .ou-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 24px; padding: 40px 30px; text-align: center; }
 
+/* ОБЪЯВЛЕНИЯ */
+.announcements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 30px; }
+.announcement-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; }
+.announcement-card h3 { color: var(--pink-light); font-size: 1.2rem; margin-bottom: 12px; }
+.announcement-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; flex-grow: 1; }
+.announcement-date { display: block; font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 15px; }
+
 /* АДАПТИВ */
 @media (max-width: 900px) {
   .header { flex-direction: column; gap: 12px; padding: 14px 4vw; }
@@ -239,6 +244,7 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 
 <!-- Выпадающее меню -->
 <div class="dropdown-menu" id="dropdownMenu">
+  <a data-page="announcements" onclick="showPage('announcements'); closeMenu()">Объявления</a>
   <a data-page="team" onclick="showPage('team'); closeMenu()">Администрация</a>
   <a data-page="oo" onclick="showPage('oo'); closeMenu()">Наши ОО</a>
   <a data-page="ou" onclick="showPage('ou'); closeMenu()">Для ОУ</a>
@@ -292,7 +298,6 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 <!-- СИСТЕМЫ -->
 <section class="page" id="page-systems">
   <h2 class="section-title">Информационные системы</h2>
-  <p class="section-sub">Нажмите на карточку, чтобы открыть подробную информацию</p>
   <div class="systems" id="systemsGrid"></div>
 </section>
 
@@ -300,6 +305,23 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 <section class="page" id="page-system-detail">
   <button class="back-btn" onclick="showPage('systems')">← Назад к системам</button>
   <div id="systemDetailContent"></div>
+</section>
+
+<!-- ОБЪЯВЛЕНИЯ -->
+<section class="page" id="page-announcements">
+  <h2 class="section-title">Объявления портала</h2>
+  <p class="section-sub">Актуальные новости и сообщения</p>
+  
+  <div class="admin-panel" id="announcementsAdminPanel" style="display: none; margin-bottom: 30px;">
+    <h2>Добавить объявление</h2>
+    <div class="staff-form">
+      <input type="text" id="annTitle" placeholder="Тема (например: Академия)">
+      <textarea id="annText" placeholder="Текст сообщения" rows="4"></textarea>
+      <button onclick="addAnnouncement()">Опубликовать</button>
+    </div>
+  </div>
+
+  <div class="announcements-grid" id="announcementsGrid"></div>
 </section>
 
 <!-- АДМИНИСТРАЦИЯ -->
@@ -589,7 +611,7 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 const ADMIN_LOGIN = "admin";
 const ADMIN_PASS = "admin";
 let currentUser = null;
-let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], frozen: false };
+let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], announcements: [], frozen: false };
 
 // ================= МЕНЮ =================
 function toggleMenu(e) {
@@ -639,6 +661,13 @@ async function initApp() {
       snapshot.forEach(doc => dbData.orgApplications.push({ id: doc.id, ...doc.data() }));
       renderOOList();
       renderOuApplications();
+    });
+
+    // Слушатель объявлений
+    window.onSnapshot(window.collection(window.db, "announcements"), (snapshot) => {
+      dbData.announcements = [];
+      snapshot.forEach(doc => dbData.announcements.push({ id: doc.id, ...doc.data() }));
+      renderAnnouncements();
     });
 
     const savedUser = localStorage.getItem('cro_user');
@@ -723,6 +752,7 @@ function updateUI() {
   const appsAdminPanel = document.getElementById('applicationsAdminPanel');
   const ouAdminPanel = document.getElementById('ouAdminPanel');
   const teamAdminPanel = document.getElementById('teamAdminPanel');
+  const annAdminPanel = document.getElementById('announcementsAdminPanel');
   const dropdown = document.getElementById('dropdownMenu');
 
   // Удаляем ссылку "Сотрудники" из выпадающего меню, если она есть
@@ -746,12 +776,14 @@ function updateUI() {
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
       teamAdminPanel.style.display = 'block';
+      annAdminPanel.style.display = 'block';
       updateFreezeBtn();
     } else if (currentUser.role === 'boss') {
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
       teamAdminPanel.style.display = 'block';
+      annAdminPanel.style.display = 'none'; // Босс не публикует объявления
     }
   } else {
     loginBtn.style.display = 'block';
@@ -760,6 +792,7 @@ function updateUI() {
     appsAdminPanel.style.display = 'none';
     ouAdminPanel.style.display = 'none';
     teamAdminPanel.style.display = 'none';
+    annAdminPanel.style.display = 'none';
   }
 
   // Применяем заморозку
@@ -775,6 +808,7 @@ function updateUI() {
   renderOOList();
   renderOuApplications();
   renderSystems();
+  renderAnnouncements();
 }
 
 // ================= ЗАМОРОЗКА =================
@@ -795,15 +829,64 @@ function updateFreezeBtn() {
   }
 }
 
+// ================= ОБЪЯВЛЕНИЯ =================
+async function addAnnouncement() {
+  const title = document.getElementById('annTitle').value.trim();
+  const text = document.getElementById('annText').value.trim();
+  
+  if (!title || !text) { alert('Заполните тему и текст объявления'); return; }
+  
+  const date = new Date().toLocaleString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  
+  await window.addDoc(window.collection(window.db, "announcements"), { 
+    title, 
+    text, 
+    date 
+  });
+  
+  document.getElementById('annTitle').value = '';
+  document.getElementById('annText').value = '';
+}
+
+function renderAnnouncements() {
+  const grid = document.getElementById('announcementsGrid');
+  if (!grid) return;
+  
+  if (dbData.announcements.length === 0) {
+    grid.innerHTML = '<p style="color:var(--text-dim);text-align:center;width:100%;grid-column:1/-1">На данный момент объявлений нет.</p>';
+    return;
+  }
+
+  // Сортируем по дате добавления (новые сверху)
+  const sorted = [...dbData.announcements].reverse();
+  const isDev = currentUser?.role === 'dev';
+
+  grid.innerHTML = sorted.map(a => `
+    <div class="announcement-card">
+      <h3>${a.title}</h3>
+      <p>${a.text}</p>
+      <span class="announcement-date">📅 ${a.date}</span>
+      ${isDev ? `<button style="margin-top:15px;background:transparent;border:1px solid var(--danger);color:var(--danger);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;" onclick="deleteAnnouncement('${a.id}')">Удалить</button>` : ''}
+    </div>
+  `).join('');
+}
+
+async function deleteAnnouncement(id) {
+  if (!currentUser || currentUser.role !== 'dev') return;
+  if (confirm('Удалить это объявление?')) {
+    await window.deleteDoc(window.doc(window.db, "announcements", id));
+  }
+}
+
 // ================= СИСТЕМЫ =================
 const systemsList = [
-  { id: 'online', name: 'АИС "Онлайн"', icon: '🌐', desc: 'Управление учебным процессом.', photos: ['https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png'], journal: ['Запуск'], func: ['Журнал', 'Расписание', 'Отчёты'] },
-  { id: 'teacher', name: 'АИС "Современный педагог"', icon: '👩‍🏫', desc: 'Проф. развитие учителей.', photos: ['https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png'], journal: ['Курсы'], func: ['Портфолио', 'Аттестация'] },
-  { id: 'eljur', name: 'АИС "ЭлЖур"', icon: '📓', desc: 'Электронные журналы.', photos: ['https://i.ibb.co/9qXyZ2v/2026-10-29-12-58-32.png', 'https://i.ibb.co/9qXyZ2v/2026-10-29-12-58-32.png', 'https://i.ibb.co/9qXyZ2v/2026-10-29-12-58-32.png'], journal: ['Тех. работы'], func: ['Журнал', 'Дневник'], unavailable: true },
-  { id: 'zhuravl', name: 'АИС "ЭжЖуравль"', icon: '🦢', desc: 'Управление организацией.', photos: ['https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png', 'https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png', 'https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png', 'https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png'], journal: [], func: ['Управление', 'Аналитика'] },
-  { id: 'class', name: 'АИС "Умный класс"', icon: '💡', desc: 'Интерактивное обучение.', photos: ['https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png'], journal: [], func: ['Уроки', 'Квизы'] },
-  { id: 'tutor', name: 'ОРИС "TutorTut"', icon: '🎓', desc: 'Наставничество.', photos: ['https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png'], journal: [], func: ['Поиск', 'Занятия'] },
-  { id: 'filin', name: 'ЭЖ "Филин"', icon: '🦉', desc: 'Современный журнал.', photos: [], journal: [], func: ['Журнал', 'Отчёты'] }
+  { id: 'online', name: 'АИС "Онлайн"', icon: '🌐', desc: 'Управление учебным процессом.', journal: ['Запуск'], func: ['Журнал', 'Расписание', 'Отчёты'] },
+  { id: 'teacher', name: 'АИС "Современный педагог"', icon: '👩‍🏫', desc: 'Проф. развитие учителей.', journal: ['Курсы'], func: ['Портфолио', 'Аттестация'] },
+  { id: 'eljur', name: 'АИС "ЭлЖур"', icon: '📓', desc: 'Электронные журналы.', journal: ['Тех. работы'], func: ['Журнал', 'Дневник'], unavailable: true },
+  { id: 'zhuravl', name: 'АИС "ЭжЖуравль"', icon: '🦢', desc: 'Управление организацией.', journal: [], func: ['Управление', 'Аналитика'] },
+  { id: 'class', name: 'АИС "Умный класс"', icon: '💡', desc: 'Интерактивное обучение.', journal: [], func: ['Уроки', 'Квизы'] },
+  { id: 'tutor', name: 'ОРИС "TutorTut"', icon: '🎓', desc: 'Наставничество.', journal: [], func: ['Поиск', 'Занятия'] },
+  { id: 'filin', name: 'ЭЖ "Филин"', icon: '🦉', desc: 'Современный журнал.', journal: [], func: ['Журнал', 'Отчёты'] }
 ];
 
 function renderSystems() {
@@ -824,7 +907,6 @@ function openSystem(id) {
   content.innerHTML = `
     <div class="detail-header"><div class="detail-icon">${s.icon}</div><h1>${s.name}</h1></div>
     ${s.unavailable ? '<div class="detail-danger">⚠ Система временно не предоставляется</div>' : ''}
-    <div class="gallery">${s.photos.length > 0 ? s.photos.map(p => `<img src="${p}" onerror="this.style.display='none'">`).join('') : '<p style="color:var(--text-dim);text-align:center;width:100%">Фото временно отсутствуют</p>'}</div>
     <div class="info-block"><h2>📋 Функционал</h2><ul>${s.func.map(f => `<li>${f}</li>`).join('')}</ul></div>
     <div class="info-block"><h2>📰 Журнал</h2><ul>${s.journal.length > 0 ? s.journal.map(j => `<li>${j}</li>`).join('') : '<li>Событий пока нет</li>'}</ul></div>
     <button class="back-btn" onclick="showPage('systems')">← Назад</button>
