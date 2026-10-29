@@ -457,99 +457,39 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- ================= ПОДКЛЮЧЕНИЕ FIREBASE И EMAILJS ================= -->
+<!-- ПОДКЛЮЧЕНИЕ EMAILJS -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
   import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyC5B2mAOHU9rKVfvXLbcFWFSDbJiiBxMT8",
-    authDomain: "mroo-rco.firebaseapp.com",
-    projectId: "mroo-rco",
-    storageBucket: "mroo-rco.firebasestorage.app",
-    messagingSenderId: "204172115670",
-    appId: "1:204172115670:web:fd6388088d3b2e1e689377"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Инициализация EmailJS
   emailjs.init("GZ_PPV-Vef4hfwGuC");
-
-  window.db = db;
-  window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc; window.updateDoc = updateDoc;
-  window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
   window.emailjs = emailjs;
-
-  window.dispatchEvent(new Event('firebaseReady'));
+  window.dispatchEvent(new Event('emailjsReady'));
 </script>
 
 <script>
-// ================= ПЕРЕМЕННЫЕ =================
-let currentUser = null;
+// ================= ПРОСТАЯ БАЗА ДАННЫХ (LocalStorage) =================
+const DB_KEY = 'cro_portal_data';
 let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], frozen: false };
+let currentUser = null;
 let currentApplyVacancyTitle = "";
 let currentVerifyOuId = null;
 
-// ================= ИНИЦИАЛИЗАЦИЯ =================
-async function initApp() {
-  try {
-    const usersSnap = await window.getDocs(window.collection(window.db, "users"));
-    if (usersSnap.empty) {
-      await window.addDoc(window.collection(window.db, "users"), { 
-        login: 'admin', pass: 'admin', role: 'dev', degree: 'main', title: 'Главный разработчик', fio: 'Системный администратор', dob: '1990-01-01' 
-      });
-    }
-
-    window.onSnapshot(window.doc(window.db, "settings", "main"), (docSnap) => {
-      dbData.frozen = docSnap.exists() ? docSnap.data().frozen : false;
-      updateUI();
-    });
-
-    window.onSnapshot(window.collection(window.db, "users"), (snapshot) => {
-      dbData.users = [];
-      snapshot.forEach(doc => dbData.users.push({ id: doc.id, ...doc.data() }));
-      updateUI();
-    });
-
-    window.onSnapshot(window.collection(window.db, "vacancies"), (snapshot) => {
-      dbData.vacancies = [];
-      snapshot.forEach(doc => dbData.vacancies.push({ id: doc.id, ...doc.data() }));
-      renderVacancies();
-    });
-
-    window.onSnapshot(window.collection(window.db, "applications"), (snapshot) => {
-      dbData.applications = [];
-      snapshot.forEach(doc => dbData.applications.push({ id: doc.id, ...doc.data() }));
-      renderApplications();
-    });
-
-    window.onSnapshot(window.collection(window.db, "orgApplications"), (snapshot) => {
-      dbData.orgApplications = [];
-      snapshot.forEach(doc => dbData.orgApplications.push({ id: doc.id, ...doc.data() }));
-      renderOuApplications();
-      renderOOList(); // Обновляем список ОО
-    });
-
-    window.onSnapshot(window.collection(window.db, "team"), (snapshot) => {
-      dbData.team = [];
-      snapshot.forEach(doc => dbData.team.push({ id: doc.id, ...doc.data() }));
-      renderTeam();
-    });
-
-    const savedUser = sessionStorage.getItem('cro_user');
-    if (savedUser) {
-      currentUser = JSON.parse(savedUser);
-      updateUI();
-    }
-
-    renderSystems();
-  } catch (e) { console.error("Ошибка:", e); }
+function loadData() {
+  const saved = localStorage.getItem(DB_KEY);
+  if (saved) {
+    dbData = JSON.parse(saved);
+  } else {
+    // Создаем админа по умолчанию
+    dbData.users = [{ login: 'admin', pass: 'admin', role: 'dev', degree: 'main', title: 'Главный разработчик', fio: 'Системный администратор', dob: '1990-01-01' }];
+    saveData();
+  }
+  const savedUser = sessionStorage.getItem('cro_user');
+  if (savedUser) currentUser = JSON.parse(savedUser);
 }
 
-window.addEventListener('firebaseReady', () => { initApp(); });
+function saveData() {
+  localStorage.setItem(DB_KEY, JSON.stringify(dbData));
+  updateUI();
+}
 
 // ================= НАВИГАЦИЯ =================
 function showPage(pageId) {
@@ -569,7 +509,7 @@ function closeModal(id) { document.getElementById(id).classList.remove('show'); 
 function openOuModal() { document.getElementById('ouModal').classList.add('show'); }
 function openLinkOuModal() { document.getElementById('linkOuModal').classList.add('show'); }
 
-async function doLogin() {
+function doLogin() {
   const login = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
   
@@ -584,15 +524,6 @@ async function doLogin() {
     updateUI();
     showPage('home');
   } else {
-    // Резервный вход, если база не успела загрузиться
-    if (login === 'admin' && pass === 'admin') {
-      currentUser = { login: 'admin', title: 'Главный разработчик', role: 'dev' };
-      sessionStorage.setItem('cro_user', JSON.stringify(currentUser));
-      closeModal('loginModal');
-      updateUI();
-      showPage('home');
-      return;
-    }
     alert('Неверный логин или пароль!');
   }
 }
@@ -670,13 +601,19 @@ function updateUI() {
   
   renderStaffList();
   renderTeamAdminList();
-  renderOOList(); // Отрисовка списка ОО
+  renderVacancies();
+  renderApplications();
+  renderOuApplications();
+  renderTeam();
+  renderSystems();
+  renderOOList();
 }
 
 // ================= ЗАМОРОЗКА =================
-async function toggleFreeze() {
+function toggleFreeze() {
   if (currentUser.role !== 'dev') return;
-  await window.setDoc(window.doc(window.db, "settings", "main"), { frozen: !dbData.frozen });
+  dbData.frozen = !dbData.frozen;
+  saveData();
 }
 
 function updateFreezeBtn() {
@@ -695,9 +632,7 @@ function renderTeam() {
   }
   grid.innerHTML = dbData.team.map(m => `
     <div class="team-card">
-      <div class="team-avatar">
-        ${m.photo ? `<img src="${m.photo}" alt="${m.fio}">` : '👤'}
-      </div>
+      <div class="team-avatar">${m.photo ? `<img src="${m.photo}" alt="${m.fio}">` : '👤'}</div>
       <h3>${m.fio}</h3>
       <p>${m.role}</p>
       <small>${m.desc || ''}</small>
@@ -716,12 +651,12 @@ function renderTeamAdminList() {
         <small><b>Должность:</b> ${m.role}</small>
         <small>${m.desc || ''}</small>
       </div>
-      <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteTeamMember('${m.id}')">Удалить</button>
+      <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteTeamMember(${m.id})">Удалить</button>
     </div>
   `).join('');
 }
 
-async function addTeamMember() {
+function addTeamMember() {
   const fio = document.getElementById('teamFio').value.trim();
   const role = document.getElementById('teamRole').value.trim();
   const photo = document.getElementById('teamPhoto').value.trim();
@@ -729,15 +664,19 @@ async function addTeamMember() {
   
   if (!fio || !role) { alert('Заполните ФИО и Должность!'); return; }
   
-  await window.addDoc(window.collection(window.db, "team"), { fio, role, photo, desc });
+  dbData.team.push({ id: Date.now(), fio, role, photo, desc });
+  saveData();
   document.getElementById('teamFio').value = '';
   document.getElementById('teamRole').value = '';
   document.getElementById('teamPhoto').value = '';
   document.getElementById('teamDesc').value = '';
 }
 
-async function deleteTeamMember(id) {
-  if (confirm('Удалить участника из команды?')) await window.deleteDoc(window.doc(window.db, "team", id));
+function deleteTeamMember(id) {
+  if (confirm('Удалить участника из команды?')) {
+    dbData.team = dbData.team.filter(m => m.id !== id);
+    saveData();
+  }
 }
 
 // ================= НАШИ ОО =================
@@ -745,7 +684,6 @@ function renderOOList() {
   const grid = document.getElementById('ooGrid');
   if (!grid) return;
   
-  // Фильтруем только привязанные ОО (status === 'linked')
   const linkedOOs = dbData.orgApplications.filter(a => a.status === 'linked');
   
   if (linkedOOs.length === 0) {
@@ -777,34 +715,37 @@ function renderVacancies() {
       <div><h3>${v.title}</h3><p><strong>Суть:</strong> ${v.desc}</p><p><strong>Условия:</strong> ${v.cond}</p></div>
       ${currentUser ? `<button class="btn-apply" onclick="openApplyModal('${v.title}')">Трудоустроиться</button>` : ''}
       ${(currentUser?.role === 'dev' || currentUser?.role === 'boss' || currentUser?.role === 'zam') ? 
-        `<button class="btn-cancel" style="margin-top: 10px; width: 100%; border-color: var(--danger); color: var(--danger);" onclick="deleteVacancy('${v.id}')">Удалить</button>` : ''}
+        `<button class="btn-cancel" style="margin-top: 10px; width: 100%; border-color: var(--danger); color: var(--danger);" onclick="deleteVacancy(${v.id})">Удалить</button>` : ''}
     </div>`).join('');
 }
 
-async function addVacancy() {
+function addVacancy() {
   const title = document.getElementById('vacTitle').value.trim();
   const desc = document.getElementById('vacDesc').value.trim();
   const cond = document.getElementById('vacCond').value.trim();
   if (!title || !desc || !cond) { alert('Заполните все поля!'); return; }
-  await window.addDoc(window.collection(window.db, "vacancies"), { title, desc, cond });
+  dbData.vacancies.push({ id: Date.now(), title, desc, cond });
+  saveData();
   document.getElementById('vacTitle').value = ''; document.getElementById('vacDesc').value = ''; document.getElementById('vacCond').value = '';
 }
 
-async function deleteVacancy(id) {
-  if (confirm('Удалить вакансию?')) await window.deleteDoc(window.doc(window.db, "vacancies", id));
+function deleteVacancy(id) {
+  if (confirm('Удалить вакансию?')) {
+    dbData.vacancies = dbData.vacancies.filter(v => v.id !== id);
+    saveData();
+  }
 }
 
 function openApplyModal(title) { currentApplyVacancyTitle = title; document.getElementById('applyModal').classList.add('show'); }
 
-async function submitApplication() {
+function submitApplication() {
   const fio = document.getElementById('appFio').value.trim();
   const dob = document.getElementById('appDob').value;
   const exp = document.getElementById('appExp').value.trim();
   const portfolio = document.getElementById('appPortfolio').value.trim();
   if (!fio || !dob || !exp) { alert('Заполните обязательные поля!'); return; }
-  await window.addDoc(window.collection(window.db, "applications"), {
-    vacancy: currentApplyVacancyTitle, fio, dob, exp, portfolio, date: new Date().toLocaleDateString('ru-RU')
-  });
+  dbData.applications.push({ id: Date.now(), vacancy: currentApplyVacancyTitle, fio, dob, exp, portfolio, date: new Date().toLocaleDateString('ru-RU') });
+  saveData();
   closeModal('applyModal');
   alert('Заявка отправлена!');
   document.getElementById('appFio').value = ''; document.getElementById('appDob').value = ''; document.getElementById('appExp').value = ''; document.getElementById('appPortfolio').value = '';
@@ -821,16 +762,19 @@ function renderApplications() {
         <small><b>Вакансия:</b> ${a.vacancy}</small><small><b>ДР:</b> ${a.dob}</small>
         <small><b>Опыт:</b> ${a.exp}</small>
       </div>
-      <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteApplication('${a.id}')">Удалить</button>
+      <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="deleteApplication(${a.id})">Удалить</button>
     </div>`).join('');
 }
 
-async function deleteApplication(id) {
-  if (confirm('Удалить заявку?')) await window.deleteDoc(window.doc(window.db, "applications", id));
+function deleteApplication(id) {
+  if (confirm('Удалить заявку?')) {
+    dbData.applications = dbData.applications.filter(a => a.id !== id);
+    saveData();
+  }
 }
 
 // ================= ЗАЯВКИ ОТ ОУ =================
-async function submitOuApplication() {
+function submitOuApplication() {
   const dir = document.getElementById('ouDir').value.trim();
   const zam = document.getElementById('ouZam').value.trim();
   const shortName = document.getElementById('ouShort').value.trim();
@@ -843,10 +787,8 @@ async function submitOuApplication() {
     alert('Заполните все поля!'); return;
   }
   
-  await window.addDoc(window.collection(window.db, "orgApplications"), {
-    dir, zam, shortName, fullName, system, phone, email, status: 'pending', date: new Date().toLocaleDateString('ru-RU')
-  });
-  
+  dbData.orgApplications.push({ id: Date.now(), dir, zam, shortName, fullName, system, phone, email, status: 'pending', date: new Date().toLocaleDateString('ru-RU') });
+  saveData();
   closeModal('ouModal');
   alert('Заявка на регистрацию ОО отправлена! Ожидайте одобрения.');
   document.getElementById('ouDir').value = ''; document.getElementById('ouZam').value = ''; document.getElementById('ouShort').value = '';
@@ -870,16 +812,18 @@ function renderOuApplications() {
       </div>
       ${a.status === 'pending' ? `
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <button style="background:var(--success); border:none; color:var(--bg-deep); padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="processOu('${a.id}', 'approved', '${a.email}', '${a.shortName}')">Одобрить</button>
-        <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="processOu('${a.id}', 'rejected', '${a.email}', '${a.shortName}')">Отклонить</button>
+        <button style="background:var(--success); border:none; color:var(--bg-deep); padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="processOu(${a.id}, 'approved', '${a.email}', '${a.shortName}')">Одобрить</button>
+        <button style="background:transparent; border:1px solid var(--danger); color:var(--danger); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="processOu(${a.id}, 'rejected', '${a.email}', '${a.shortName}')">Отклонить</button>
       </div>` : ''}
     </div>`).join('');
 }
 
-// ================= ОТПРАВКА ПИСЕМ И СТАТУСЫ ОУ =================
-async function processOu(id, status, email, name) {
+function processOu(id, status, email, name) {
   if (!confirm(`Вы уверены, что хотите ${status === 'approved' ? 'одобрить' : 'отклонить'} заявку от ${name}?`)) return;
   
+  const app = dbData.orgApplications.find(a => a.id === id);
+  if (!app) return;
+
   let code = "";
   let messageText = "";
   
@@ -890,10 +834,10 @@ async function processOu(id, status, email, name) {
     messageText = `Свяжитесь с техподдержкой (tehpod-mroo@ro.ru) для уточнения причин отказа.`;
   }
 
-  // Обновляем статус в Firebase
-  await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
+  app.status = status;
+  app.code = code;
+  saveData();
   
-  // Отправляем письмо через EmailJS
   const templateParams = {
     to_email: email,
     org_name: name,
@@ -901,17 +845,13 @@ async function processOu(id, status, email, name) {
     message: messageText
   };
 
-  try {
-    await window.emailjs.send('service_sgodeoi', 'template_qx2nuk8', templateParams);
-    alert(`Статус изменен. Письмо успешно отправлено на ${email}`);
-  } catch (error) {
-    console.error('Ошибка отправки:', error);
-    alert(`Статус изменен, но письмо не отправилось. Ошибка: ${error.text || error.message}`);
-  }
+  window.emailjs.send('service_sgodeoi', 'template_qx2nuk8', templateParams)
+    .then(() => alert(`Статус изменен. Письмо успешно отправлено на ${email}`))
+    .catch(err => alert(`Статус изменен, но письмо не отправилось. Ошибка: ${err.text || err.message}`));
 }
 
 // ================= ПРИВЯЗКА ОУ =================
-async function verifyCode() {
+function verifyCode() {
   const inputCode = document.getElementById('linkCode').value.trim().toUpperCase();
   if (!inputCode) { alert('Введите код!'); return; }
   
@@ -933,12 +873,11 @@ async function verifyCode() {
   }
 }
 
-async function confirmLink() {
+function confirmLink() {
   if (!currentVerifyOuId) return;
-  
-  // Меняем статус на "Привязано"
-  await window.setDoc(window.doc(window.db, "orgApplications", currentVerifyOuId), { status: 'linked' }, { merge: true });
-  
+  const app = dbData.orgApplications.find(a => a.id === currentVerifyOuId);
+  if (app) app.status = 'linked';
+  saveData();
   closeModal('confirmDataModal');
   document.getElementById('welcomeModal').classList.add('show');
   document.getElementById('linkCode').value = '';
@@ -953,11 +892,11 @@ function renderStaffList() {
     <div class="staff-item">
       <div><span>${u.title}</span><small><b>ФИО:</b> ${u.fio}</small><small><b>Логин:</b> ${u.login}</small></div>
       ${u.role !== 'dev' || dbData.users.filter(x => x.role === 'dev').length > 1 ? 
-        `<button style="background:transparent; border:none; color:var(--danger); cursor:pointer;" onclick="removeEmployee('${u.id}')">Удалить</button>` : ''}
+        `<button style="background:transparent; border:none; color:var(--danger); cursor:pointer;" onclick="removeEmployee('${u.login}')">Удалить</button>` : ''}
     </div>`).join('');
 }
 
-async function addEmployee() {
+function addEmployee() {
   const fio = document.getElementById('newFio').value.trim();
   const dob = document.getElementById('newDob').value;
   const login = document.getElementById('newLogin').value.trim();
@@ -971,12 +910,18 @@ async function addEmployee() {
   let title = role === 'boss' ? 'Руководитель' : (role === 'zam' ? 'Заместитель' : 'Разработчик');
   if (role === 'dev') title = degree === 'main' ? 'Главный разработчик' : (degree === 'deputy' ? 'Зам. главного' : 'Младший разработчик');
   
-  await window.addDoc(window.collection(window.db, "users"), { login, pass, role, degree, title, fio, dob });
+  dbData.users.push({ login, pass, role, degree, title, fio, dob });
+  saveData();
   document.getElementById('newFio').value = ''; document.getElementById('newDob').value = ''; document.getElementById('newLogin').value = ''; document.getElementById('newPass').value = '';
   alert('Сотрудник успешно добавлен!');
 }
 
-async function removeEmployee(id) { if (confirm('Удалить сотрудника?')) await window.deleteDoc(window.doc(window.db, "users", id)); }
+function removeEmployee(login) {
+  if (confirm('Удалить сотрудника?')) {
+    dbData.users = dbData.users.filter(u => u.login !== login);
+    saveData();
+  }
+}
 
 // ================= СИСТЕМЫ =================
 function renderSystems() {
@@ -997,6 +942,12 @@ function renderSystems() {
       ${s.unavailable ? '<span class="badge-danger">⚠ Временно не предоставляется</span>' : ''}
     </div>`).join('');
 }
+
+// ================= ЗАПУСК =================
+window.onload = () => {
+  loadData();
+  updateUI();
+};
 </script>
 </body>
 </html>
