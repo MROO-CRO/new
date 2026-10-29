@@ -453,12 +453,10 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
     <p class="auth-subtitle">Доступ только для администрации</p>
     <div class="auth-input-group">
       <span class="auth-input-icon">👤</span>
-      <!-- Убрали value="admin" -->
       <input type="text" id="loginUser" class="form-control auth-input" placeholder="Логин">
     </div>
     <div class="auth-input-group">
       <span class="auth-input-icon">🔑</span>
-      <!-- Убрали value="admin" -->
       <input type="password" id="loginPass" class="form-control auth-input" placeholder="Пароль">
     </div>
     <div class="form-actions" style="margin-top: 30px;">
@@ -612,7 +610,6 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 <script>
 // ================= ПЕРЕМЕННЫЕ =================
 const ADMIN_LOGIN = "admin";
-// НОВЫЙ ПАРОЛЬ (9 символов)
 const ADMIN_PASS = "Cro_Admin9"; 
 let currentUser = null;
 let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], announcements: [], frozen: false };
@@ -1107,27 +1104,37 @@ function renderOuApplications() {
       </div>
       ${a.status === 'pending' ? `
       <div style="display:flex;flex-direction:column;gap:5px">
-        <button style="background:var(--success);border:none;color:#000;padding:5px 10px;border-radius:5px" onclick="processOu('${a.id}', 'approved', '${a.email}', '${a.shortName}')">Одобрить</button>
-        <button style="background:transparent;border:1px solid var(--danger);color:var(--danger);padding:5px 10px;border-radius:5px" onclick="processOu('${a.id}', 'rejected', '${a.email}', '${a.shortName}')">Отклонить</button>
+        <button style="background:var(--success);border:none;color:#000;padding:5px 10px;border-radius:5px;cursor:pointer" onclick="processOu('${a.id}', 'approved')">Одобрить</button>
+        <button style="background:transparent;border:1px solid var(--danger);color:var(--danger);padding:5px 10px;border-radius:5px;cursor:pointer" onclick="processOu('${a.id}', 'rejected')">Отклонить</button>
       </div>` : ''}
     </div>
   `).join('');
 }
 
-async function processOu(id, status, email, name) {
+async function processOu(id, status) {
   if (!confirm(`Вы уверены?`)) return;
+  
+  // Находим заявку в локальных данных по ID
+  const app = dbData.orgApplications.find(a => a.id === id);
+  if (!app) { alert('Ошибка: заявка не найдена'); return; }
+
   let code = "";
   let text = "";
   
   if (status === 'approved') {
     code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    text = `Здравствуйте!\nВаша заявка на подключение "${name}" ОДОБРЕНА.\nКод для привязки: ${code}\n\nС уважением, ЦРО.`;
+    text = `Здравствуйте!\nВаша заявка на подключение "${app.shortName}" ОДОБРЕНА.\nКод для привязки: ${code}\n\nС уважением, ЦРО.`;
   } else {
-    text = `Здравствуйте!\nК сожалению, ваша заявка "${name}" ОТКЛОНЕНА.\n\nС уважением, ЦРО.`;
+    text = `Здравствуйте!\nК сожалению, ваша заявка "${app.shortName}" ОТКЛОНЕНА.\n\nС уважением, ЦРО.`;
   }
 
-  await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
-  showLetterModal(text);
+  try {
+    await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
+    showLetterModal(text);
+  } catch (e) {
+    console.error("Ошибка при обновлении статуса: ", e);
+    alert("Произошла ошибка при сохранении. Попробуйте снова.");
+  }
 }
 
 // ================= ПРИВЯЗКА =================
