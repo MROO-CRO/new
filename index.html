@@ -3,169 +3,1066 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Идут технические работы</title>
+<title>МРОО «Центр развития образования»</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg-deep: #0a0620; --bg-mid: #150a3a;
-    --violet: #7b3ff2; --violet-light: #9d6bff;
-    --blue: #3a6bff; --blue-light: #6f9dff;
-    --text: #ece7ff; --text-dim: #b9aee0; --danger: #ff4d6d;
-  }
-  body {
-    font-family: "Segoe UI", "Inter", sans-serif;
-    background: linear-gradient(160deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    padding: 20px;
-  }
+/* ================= БАЗА ================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-deep: #0a0620; --bg-mid: #150a3a;
+  --violet: #7b3ff2; --violet-light: #b06bff;
+  --blue: #3a6bff; --blue-light: #6f9dff;
+  --pink: #ff4d9d; --pink-light: #ff80b8;
+  --text: #ece7ff; --text-dim: #c9b8f0;
+  --danger: #ff4d6d; --success: #00d2ff; --gold: #ffd700;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Segoe UI", "Inter", sans-serif; 
+  background: linear-gradient(160deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+  color: var(--text); min-height: 100vh; overflow-x: hidden; position: relative; display: flex; flex-direction: column;
+}
+.bg-glow { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.45; z-index: 0; animation: float 14s ease-in-out infinite; pointer-events: none; }
+.glow-1 { width: 500px; height: 500px; background: var(--violet); top: -150px; left: -100px; }
+.glow-2 { width: 450px; height: 450px; background: var(--blue); bottom: -120px; right: -80px; animation-delay: -5s; }
+.glow-3 { width: 350px; height: 350px; background: var(--pink); top: 40%; left: 55%; animation-delay: -9s; opacity: 0.3; }
+@keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-30px) scale(1.1); } }
 
-  /* Светящиеся пятна на фоне */
-  .glow {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.5;
-    z-index: 0;
-    animation: float 10s ease-in-out infinite;
-    pointer-events: none;
-  }
-  .glow-1 { width: 400px; height: 400px; background: var(--violet); top: -100px; left: -100px; }
-  .glow-2 { width: 350px; height: 350px; background: var(--blue); bottom: -100px; right: -100px; animation-delay: -5s; }
-  @keyframes float {
-    0%,100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(30px,-30px) scale(1.1); }
-  }
+.header { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 18px 6vw; backdrop-filter: blur(14px); background: rgba(10, 6, 32, 0.65); border-bottom: 1px solid rgba(176, 107, 255, 0.15); }
+.logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.logo-mark { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, var(--violet), var(--pink)); font-weight: 800; font-size: 14px; box-shadow: 0 0 20px rgba(123, 63, 242, 0.6); flex-shrink: 0; }
+.logo-text { font-weight: 600; font-size: 15px; color: var(--text-dim); white-space: nowrap; }
 
-  /* Карточка с сообщением */
-  .maintenance-box {
-    position: relative;
-    z-index: 2;
-    max-width: 700px;
-    width: 100%;
-    background: rgba(30, 15, 70, 0.6);
-    border: 2px solid rgba(255, 77, 109, 0.4);
-    border-radius: 30px;
-    padding: 60px 40px;
-    text-align: center;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 
-                inset 0 0 60px rgba(123, 63, 242, 0.1),
-                0 0 40px rgba(255, 77, 109, 0.1);
-    animation: appear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-  }
-  @keyframes appear {
-    from { opacity: 0; transform: scale(0.9) translateY(30px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
+/* Навигация */
+.nav-container { display: flex; align-items: center; gap: 10px; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.nav a { color: var(--text-dim); text-decoration: none; font-size: 14px; padding: 10px 14px; border-radius: 12px; transition: all 0.3s; cursor: pointer; }
+.nav a:hover { color: #fff; background: rgba(123, 63, 242, 0.2); }
+.nav a.active { color: #fff; background: linear-gradient(135deg, var(--violet), var(--pink)); box-shadow: 0 6px 20px rgba(123, 63, 242, 0.5); }
 
-  /* Иконка с пульсацией */
-  .maintenance-icon {
-    font-size: 5rem;
-    display: inline-block;
-    margin-bottom: 30px;
-    animation: pulse 2.5s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px rgba(255, 77, 109, 0.6));
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
+/* Кнопка меню (бургер) */
+.menu-btn { background: transparent; border: 2px solid var(--pink-light); color: #fff; width: 44px; height: 44px; border-radius: 12px; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+.menu-btn:hover { background: var(--pink-light); color: #000; box-shadow: 0 0 15px rgba(255, 128, 184, 0.6); }
 
-  /* Заголовок с градиентом */
-  .maintenance-title {
-    font-size: clamp(1.4rem, 4vw, 2rem);
-    font-weight: 800;
-    line-height: 1.4;
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, var(--violet-light), var(--danger), var(--blue-light), var(--violet-light));
-    background-size: 300% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 4s linear infinite;
-  }
-  @keyframes shine { to { background-position: 300% center; } }
+/* Выпадающее меню */
+.dropdown-menu { position: absolute; top: 80px; right: 6vw; background: rgba(21, 10, 58, 0.98); border: 1px solid rgba(176, 107, 255, 0.4); border-radius: 16px; padding: 10px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); display: none; flex-direction: column; gap: 5px; min-width: 220px; z-index: 20; animation: fadeIn 0.3s ease; }
+.dropdown-menu.show { display: flex; }
+.dropdown-menu a { color: var(--text-dim); text-decoration: none; padding: 12px 16px; border-radius: 10px; cursor: pointer; font-size: 15px; transition: all 0.2s; }
+.dropdown-menu a:hover { background: rgba(123, 63, 242, 0.2); color: #fff; }
+.dropdown-menu a.active { background: linear-gradient(135deg, var(--violet), var(--pink)); color: #fff; }
 
-  /* Основной текст */
-  .maintenance-text {
-    font-size: clamp(1rem, 2.5vw, 1.15rem);
-    color: var(--text-dim);
-    line-height: 1.8;
-    margin-bottom: 20px;
-    animation: appear 0.8s ease 0.3s both;
-  }
+.auth-area { display: flex; align-items: center; gap: 10px; margin-left: 10px; }
+.login-btn { background: transparent; border: 2px solid var(--pink-light); color: #fff; padding: 10px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
+.login-btn:hover { background: var(--pink-light); box-shadow: 0 0 15px rgba(255, 128, 184, 0.6); color: #000; }
+.user-badge { display: none; align-items: center; gap: 10px; padding: 8px 16px; background: rgba(0, 210, 255, 0.1); border: 1px solid rgba(0, 210, 255, 0.3); border-radius: 12px; font-size: 0.9rem; color: var(--success); font-weight: 600; }
+.user-badge.active { display: flex; }
+.logout-btn { background: transparent; border: none; color: var(--danger); cursor: pointer; font-weight: 700; font-size: 0.85rem; text-decoration: underline; }
 
-  /* Полоса загрузки */
-  .progress-bar {
-    width: 100%;
-    height: 6px;
-    background: rgba(157, 107, 255, 0.15);
-    border-radius: 3px;
-    margin-top: 40px;
-    overflow: hidden;
-    position: relative;
-    animation: appear 0.8s ease 0.6s both;
-  }
-  .progress-bar::after {
-    content: "";
-    position: absolute;
-    top: 0; left: -50%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, var(--violet-light), var(--blue-light), transparent);
-    border-radius: 3px;
-    animation: loading 2s ease-in-out infinite;
-  }
-  @keyframes loading {
-    0% { left: -50%; }
-    100% { left: 100%; }
-  }
+.page { display: none; position: relative; z-index: 2; flex: 1; max-width: 1100px; margin: 0 auto; padding: 60px 24px 100px; animation: fadeIn 0.5s ease both; width: 100%; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Подпись */
-  .signature {
-    margin-top: 30px;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    opacity: 0.6;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    animation: appear 0.8s ease 0.9s both;
-  }
+.hero-title { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; text-align: center; }
+.hero-title .line { display: inline-block; background: linear-gradient(90deg, var(--violet-light), var(--pink-light), var(--blue-light)); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite, slideUp 1s ease both; }
+@keyframes shine { to { background-position: 200% center; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.hero-subtitle { font-size: clamp(1rem, 2.2vw, 1.25rem); color: var(--text-dim); max-width: 650px; margin: 0 auto 50px; line-height: 1.6; text-align: center; animation: slideUp 1s ease 0.3s both; }
+.hero-subtitle strong { color: var(--pink-light); }
+
+.about-card { position: relative; text-align: left; background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 24px; padding: 40px; backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,0.45); animation: slideUp 1s ease 0.6s both; overflow: hidden; }
+.about-card::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 100%; background: linear-gradient(90deg, transparent, var(--violet-light), var(--pink-light), transparent); animation: sweep 3s linear infinite; }
+@keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+.section-title { text-align: center; font-size: clamp(1.8rem, 4.5vw, 2.8rem); margin-bottom: 20px; background: linear-gradient(90deg, var(--violet-light), var(--pink-light), var(--blue-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.section-sub { text-align: center; color: var(--text-dim); margin-bottom: 50px; font-size: 1.05rem; }
+
+/* ТЕХ РАБОТЫ */
+.tech-works { display: none; text-align: center; margin: 60px auto; background: rgba(30, 15, 70, 0.8); border: 2px solid var(--danger); padding: 60px 40px; border-radius: 24px; max-width: 700px; box-shadow: 0 0 50px rgba(255, 77, 109, 0.2); }
+body.frozen .tech-works { display: block; }
+body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, body.frozen .cta-wrap { display: none; }
+.tech-works h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--danger); margin-bottom: 20px; animation: pulseText 2s infinite; }
+.tech-works p { color: var(--text-dim); font-size: 1.2rem; line-height: 1.6; }
+@keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 109, 0.5); } 50% { opacity: 0.7; text-shadow: 0 0 30px rgba(255, 77, 109, 1); } }
+
+/* СИСТЕМЫ */
+.systems { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.system-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 20px; padding: 28px 24px; cursor: pointer; transition: transform 0.35s, box-shadow 0.35s, border-color 0.35s; }
+.system-card:hover { transform: translateY(-8px); border-color: rgba(176, 107, 255, 0.7); box-shadow: 0 20px 50px rgba(123, 63, 242, 0.4); }
+.system-icon { width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--violet), var(--pink)); margin-bottom: 18px; }
+.system-card h3 { font-size: 1.15rem; margin-bottom: 8px; color: #fff; }
+.system-card p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.5; }
+.badge-danger { display: inline-block; margin-top: 12px; padding: 6px 14px; background: rgba(255, 77, 109, 0.15); border: 1px solid rgba(255, 77, 109, 0.5); color: #ff8095; font-size: 0.8rem; font-weight: 600; border-radius: 999px; animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100% { box-shadow: 0 0 0 rgba(255,77,109,0); } 50% { box-shadow: 0 0 18px rgba(255,77,109,0.5); } }
+
+/* ДЕТАЛИ СИСТЕМЫ */
+.detail-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+.detail-icon { width: 70px; height: 70px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--violet), var(--pink)); box-shadow: 0 10px 30px rgba(123,63,242,0.5); }
+.detail-header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+.detail-danger { display: inline-block; padding: 10px 20px; background: rgba(255, 77, 109, 0.15); border: 1px solid rgba(255, 77, 109, 0.5); color: #ff8095; border-radius: 12px; font-weight: 600; margin-bottom: 30px; }
+.back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(123, 63, 242, 0.15); border: 1px solid rgba(176, 107, 255, 0.35); color: var(--text); border-radius: 12px; cursor: pointer; font-size: 0.95rem; font-family: inherit; margin-bottom: 30px; transition: all 0.3s; }
+.back-btn:hover { background: rgba(123, 63, 242, 0.3); transform: translateX(-4px); }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 40px; }
+.gallery img { width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 16px; border: 1px solid rgba(176, 107, 255, 0.3); background: rgba(30,15,70,0.6); }
+.info-block { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 20px; padding: 30px; backdrop-filter: blur(14px); margin-bottom: 24px; }
+.info-block h2 { font-size: 1.3rem; margin-bottom: 16px; color: #fff; }
+.info-block ul { list-style: none; display: grid; gap: 10px; margin-top: 10px; }
+.info-block li { padding: 12px 16px; background: rgba(123, 63, 242, 0.1); border-left: 3px solid var(--violet-light); border-radius: 8px; color: var(--text-dim); }
+
+/* КОМАНДА */
+.team-hierarchy { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 40px; }
+.team-boss { width: 100%; max-width: 350px; }
+.team-lower { display: flex; gap: 24px; width: 100%; justify-content: center; flex-wrap: wrap; }
+.team-lower > div { flex: 1; min-width: 250px; max-width: 350px; }
+.team-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 24px; padding: 30px 20px; text-align: center; transition: transform 0.35s, border-color 0.35s; position: relative; }
+.team-boss .team-card { border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); padding-top: 50px; }
+.crown { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 3rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); animation: float 3s ease-in-out infinite; }
+.team-boss .team-card h3 { color: var(--gold); font-size: 1.4rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+.team-avatar { width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; display: grid; place-items: center; font-size: 2.5rem; background: linear-gradient(135deg, var(--violet), var(--pink)); border: 3px solid rgba(255,255,255,0.1); overflow: hidden; }
+.team-boss .team-avatar { border: 3px solid var(--gold); width: 120px; height: 120px; }
+.team-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.team-card p { color: var(--success); font-size: 0.95rem; font-weight: 600; margin-bottom: 5px; }
+.team-card small { color: var(--text-dim); font-size: 0.85rem; display: block; }
+.contact-manager-btn { margin-top: 15px; padding: 8px 16px; background: transparent; border: 1px solid var(--pink-light); color: var(--pink-light); border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+.contact-manager-btn:hover { background: var(--pink-light); color: #000; }
+
+/* АДМИН ПАНЕЛИ */
+.admin-panel { margin-top: 40px; background: rgba(30, 15, 70, 0.7); border: 1px solid var(--success); border-radius: 20px; padding: 30px; }
+.admin-panel h2 { color: #fff; margin-bottom: 20px; border-bottom: 1px solid rgba(0, 210, 255, 0.3); padding-bottom: 10px; }
+.staff-list { display: grid; gap: 10px; margin-bottom: 30px; }
+.staff-item { display: flex; justify-content: space-between; align-items: flex-start; background: rgba(0, 210, 255, 0.05); padding: 15px 20px; border-radius: 10px; border-left: 3px solid var(--success); }
+.staff-item span { font-weight: bold; color: #fff; display: block; }
+.staff-item small { color: var(--text-dim); display: block; }
+.staff-form { display: grid; gap: 15px; max-width: 500px; }
+.staff-form input, .staff-form select, .staff-form textarea { padding: 12px; border-radius: 10px; background: rgba(10, 6, 32, 0.6); border: 1px solid rgba(176, 107, 255, 0.3); color: #fff; font-family: inherit; width: 100%;}
+.staff-form button { padding: 14px; border-radius: 10px; border: none; font-weight: bold; background: var(--success); color: var(--bg-deep); cursor: pointer; transition: 0.3s; }
+
+/* Кнопка заморозки */
+.btn-freeze { background: var(--danger); color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; margin-top: 15px; display: block; width: 100%; }
+.btn-freeze:hover { box-shadow: 0 0 20px rgba(255, 77, 109, 0.6); transform: scale(1.02); }
+.btn-unfreeze { background: var(--success); color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; margin-top: 15px; display: block; width: 100%; }
+
+/* МОДАЛЬНЫЕ ОКНА */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 6, 32, 0.85); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 20px; }
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal-content { background: linear-gradient(160deg, #150a3a, #0a0620); border-radius: 24px; padding: 40px; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(176, 107, 255, 0.4); }
+.modal-overlay.show .modal-content { transform: scale(1); }
+.modal-content h3 { text-align: center; margin-bottom: 24px; color: #fff; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 8px; }
+.form-control { width: 100%; padding: 12px; background: rgba(10, 6, 32, 0.6); border: 1px solid rgba(176, 107, 255, 0.3); border-radius: 10px; color: #fff; font-family: inherit; }
+.form-actions { display: flex; gap: 12px; margin-top: 26px; }
+.btn-cancel, .btn-submit { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; }
+.btn-cancel { background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); }
+.btn-submit { background: linear-gradient(135deg, var(--violet), var(--pink)); color: #fff; }
+
+/* ФУТЕР */
+.footer { position: relative; z-index: 2; text-align: center; padding: 30px 20px; border-top: 1px solid rgba(176, 107, 255, 0.15); color: var(--text-dim); font-size: 0.9rem; margin-top: auto; }
+.footer p { margin: 5px 0; }
+
+/* ================= КРАСИВАЯ ФОРМА ВХОДА ================= */
+.auth-form { background: rgba(21, 10, 58, 0.6) !important; backdrop-filter: blur(20px); border: 1px solid rgba(255, 77, 157, 0.4) !important; border-radius: 30px !important; padding: 50px 40px !important; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(123, 63, 242, 0.2) !important; text-align: center; }
+.auth-icon { width: 80px; height: 80px; background: linear-gradient(135deg, var(--violet), var(--pink)); border-radius: 50%; display: grid; place-items: center; font-size: 2.5rem; margin: 0 auto 20px; box-shadow: 0 10px 30px rgba(123, 63, 242, 0.6); animation: float 4s ease-in-out infinite; }
+.auth-form h3 { font-size: 1.8rem !important; margin-bottom: 8px !important; color: #fff !important; }
+.auth-subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
+.auth-input-group { position: relative; margin-bottom: 20px; text-align: left; }
+.auth-input-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; opacity: 0.6; }
+.auth-input { width: 100% !important; padding: 18px 20px 18px 55px !important; background: rgba(10, 6, 32, 0.8) !important; border: 2px solid rgba(255, 77, 157, 0.2) !important; border-radius: 16px !important; color: #fff !important; transition: all 0.3s ease !important; }
+.auth-input:focus { border-color: var(--pink-light) !important; box-shadow: 0 0 20px rgba(255, 128, 184, 0.3) !important; outline: none; }
+.auth-submit-btn { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 18px !important; border-radius: 16px !important; font-size: 1.1rem !important; background: linear-gradient(135deg, var(--violet), var(--pink)) !important; box-shadow: 0 10px 25px rgba(123, 63, 242, 0.5) !important; }
+
+/* ================= ПРИВЕТСТВИЕ ================= */
+.welcome-toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 15px; background: rgba(21, 10, 58, 0.95); backdrop-filter: blur(20px); border: 1px solid var(--gold); border-radius: 20px; padding: 18px 30px; box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3); z-index: 1000; transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; opacity: 0; pointer-events: none; }
+.welcome-toast.show { top: 30px; opacity: 1; }
+.toast-icon { font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); }
+.toast-name { color: #fff; font-size: 1.1rem; font-weight: 600; }
+
+/* ================= ОКНО С ПИСЬМОМ ================= */
+.letter-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 6, 32, 0.9); backdrop-filter: blur(10px); z-index: 999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 20px; }
+.letter-overlay.show { opacity: 1; pointer-events: all; }
+.letter-box { background: linear-gradient(160deg, #150a3a, #0a0620); border: 2px solid var(--success); border-radius: 24px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 0 60px rgba(0, 210, 255, 0.3); max-height: 90vh; overflow-y: auto; }
+.letter-text { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(176, 107, 255, 0.3); border-radius: 12px; padding: 20px; color: #fff; font-family: monospace; white-space: pre-wrap; margin-bottom: 20px; }
+.letter-actions { display: flex; gap: 10px; }
+.btn-copy { flex: 1; padding: 14px; border-radius: 12px; background: var(--success); color: #000; font-weight: 600; cursor: pointer; border: none; }
+.btn-close-letter { flex: 1; padding: 14px; border-radius: 12px; background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); cursor: pointer; }
+
+/* КОНТАКТЫ И ПРЕИМУЩЕСТВА */
+.contact-cards, .advantages { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 40px; }
+.contact-card, .adv-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 24px; padding: 40px 30px; text-align: center; transition: transform 0.35s, border-color 0.35s; }
+.contact-card:hover, .adv-card:hover { transform: translateY(-5px); border-color: rgba(176, 107, 255, 0.7); }
+.contact-icon, .adv-icon { width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; background: linear-gradient(135deg, var(--violet), var(--pink)); }
+.contact-card h3, .adv-card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 16px; }
+.contact-card p, .adv-card p { color: var(--text-dim); line-height: 1.6; }
+
+/* ОО И ОУ */
+.oo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 40px; }
+.oo-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 20px; padding: 28px 24px; text-align: center; }
+.oo-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 2px solid var(--pink-light); }
+.oo-card h3 { color: var(--blue-light); margin-bottom: 10px; }
+.oo-card p { color: var(--text-dim); font-size: 0.92rem; margin-bottom: 5px; }
+
+.ou-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
+.ou-card { background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 24px; padding: 40px 30px; text-align: center; }
+
+/* АДАПТИВ */
+@media (max-width: 900px) {
+  .header { flex-direction: column; gap: 12px; padding: 14px 4vw; }
+  .nav { justify-content: center; }
+  .auth-area { margin-left: 0; width: 100%; justify-content: center; }
+  .dropdown-menu { right: 50%; transform: translateX(50%); top: 140px; }
+}
 </style>
 </head>
 <body>
 
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
+<div class="bg-glow glow-1"></div>
+<div class="bg-glow glow-2"></div>
+<div class="bg-glow glow-3"></div>
 
-  <div class="maintenance-box">
-    <div class="maintenance-icon">⚙️</div>
-    
-    <h1 class="maintenance-title">
-      Дорогие друзья!
-    </h1>
-    
-    <p class="maintenance-text">
-      Сайт приостановил работу в связи с загрузкой <br>
-      <strong style="color: var(--blue-light);">масштабных обновлений!</strong>
-    </p>
-    
-    <p class="maintenance-text">
-      Просим прощения за доставленные неудобства!
-    </p>
+<header class="header">
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-mark">ЦРО</div>
+    <div class="logo-text">МРОО "Центр развития образования"</div>
+  </div>
+  
+  <div class="nav-container">
+    <nav class="nav">
+      <a data-page="home" class="active" onclick="showPage('home')">Главная</a>
+      <a data-page="advantages" onclick="showPage('advantages')">Преимущества</a>
+      <a data-page="systems" onclick="showPage('systems')">Информационные системы</a>
+    </nav>
+    <button class="menu-btn" onclick="toggleMenu(event)">☰</button>
+  </div>
 
-    <div class="progress-bar"></div>
+  <div class="auth-area">
+    <div class="user-badge" id="userBadge">
+      <span id="userName">User</span>
+      <button class="logout-btn" onclick="logout()">Выйти</button>
+    </div>
+    <button class="login-btn" id="loginBtn" onclick="openLoginModal()">Войти</button>
+  </div>
+</header>
 
-    <div class="signature">
-      МРОО «Центр развития образования»
+<!-- Выпадающее меню -->
+<div class="dropdown-menu" id="dropdownMenu">
+  <a data-page="team" onclick="showPage('team'); closeMenu()">Администрация</a>
+  <a data-page="oo" onclick="showPage('oo'); closeMenu()">Наши ОО</a>
+  <a data-page="ou" onclick="showPage('ou'); closeMenu()">Для ОУ</a>
+  <a data-page="jobs" onclick="showPage('jobs'); closeMenu()">Работа у нас</a>
+  <a data-page="contacts" onclick="showPage('contacts'); closeMenu()">Контакты</a>
+</div>
+
+<!-- ГЛАВНАЯ -->
+<section class="page active" id="page-home">
+  <div class="tech-works">
+    <h1>Дорогие друзья!</h1>
+    <p>Сайт приостановил работу в связи с загрузкой масштабных обновлений!<br>Просим прощения за доставленные неудобства!</p>
+  </div>
+  <div class="hero-content">
+    <h1 class="hero-title"><span class="line">Кто мы такие?</span></h1>
+    <p class="hero-subtitle">Мы — <strong>образовательный портал</strong> для школ, который объединяет педагогов, методистов и учеников в единую цифровую среду.</p>
+    <div class="about-card">
+      <h2 class="about-heading">Наша миссия</h2>
+      <p class="about-text"><span class="reveal">МРОО «Центр развития образования»</span> — это региональная общественная организация, созданная для поддержки и развития системы школьного образования.</p>
+      <ul class="features">
+        <li class="feature"><span>📚</span> Методическая поддержка школ</li>
+        <li class="feature"><span>🎓</span> Повышение квалификации педагогов</li>
+        <li class="feature"><span>🌐</span> Единая цифровая образовательная среда</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ПРЕИМУЩЕСТВА -->
+<section class="page" id="page-advantages">
+  <h2 class="section-title">Наши преимущества</h2>
+  <p class="section-sub">Почему стоит работать с нами</p>
+  <div class="advantages">
+    <div class="adv-card"><div class="adv-icon">🛟</div><h3>Поддержка</h3><p>Круглосуточная техническая и моральная поддержка участников проекта.</p></div>
+    <div class="adv-card"><div class="adv-icon">🏆</div><h3>Опыт</h3><p>Вы получите незабываемый опыт работы и сотрудничества с нами.</p></div>
+    <div class="adv-card"><div class="adv-icon">⚖️</div><h3>Законность</h3><p>В нашей МРОО имеются свои основные регламенты и локальные акты.</p></div>
+    <div class="adv-card"><div class="adv-icon">📈</div><h3>Карьерный рост</h3><p>Множество различных отделений и специалистов, куда можно поступить.</p></div>
+  </div>
+</section>
+
+<!-- СИСТЕМЫ -->
+<section class="page" id="page-systems">
+  <h2 class="section-title">Информационные системы</h2>
+  <p class="section-sub">Нажмите на карточку, чтобы открыть подробную информацию</p>
+  <div class="systems" id="systemsGrid"></div>
+</section>
+
+<!-- ДЕТАЛИ СИСТЕМЫ -->
+<section class="page" id="page-system-detail">
+  <button class="back-btn" onclick="showPage('systems')">← Назад к системам</button>
+  <div id="systemDetailContent"></div>
+</section>
+
+<!-- АДМИНИСТРАЦИЯ -->
+<section class="page" id="page-team">
+  <h2 class="section-title">Администрация МРОО</h2>
+  <p class="section-sub">Руководство Центра развития образования</p>
+  
+  <div class="team-hierarchy" id="teamHierarchy"></div>
+
+  <!-- Панель управления командой (только для админа) -->
+  <div class="admin-panel" id="teamAdminPanel" style="display: none; margin-top: 50px;">
+    <h2>Редактирование администрации</h2>
+    <div class="staff-list" id="teamAdminList"></div>
+    
+    <h3 style="color: #fff; margin: 20px 0 15px;">Добавить участника</h3>
+    <div class="staff-form">
+      <input type="text" id="teamFio" placeholder="ФИО">
+      <select id="teamRole" class="form-control" style="margin-bottom: 0;">
+        <option value="Руководитель">Руководитель</option>
+        <option value="Заместитель руководителя">Заместитель руководителя</option>
+        <option value="Председатель">Председатель</option>
+      </select>
+      <input type="text" id="teamSlogan" placeholder="Слоган (например: Я - за образование)">
+      <input type="text" id="teamPhoto" placeholder="Ссылка на фото (URL)">
+      <button onclick="addTeamMember()">Добавить</button>
+    </div>
+  </div>
+</section>
+
+<!-- НАШИ ОО -->
+<section class="page" id="page-oo">
+  <h2 class="section-title">Наши ОО</h2>
+  <p class="section-sub">Образовательные организации, подключенные к системе</p>
+  <div class="oo-grid" id="ooGrid"></div>
+</section>
+
+<!-- ДЛЯ ОУ -->
+<section class="page" id="page-ou">
+  <h2 class="section-title">Для образовательных учреждений</h2>
+  <p class="section-sub">Подключение школ к единой цифровой среде</p>
+  
+  <div class="ou-grid">
+    <div class="ou-card">
+      <div class="contact-icon">🔗</div>
+      <h3>Привязка ОО</h3>
+      <p>Введите уникальный код из письма</p>
+      <button class="login-btn" style="margin-top: 20px; width: 100%;" onclick="openLinkOuModal()">Ввести код</button>
+    </div>
+    <div class="ou-card">
+      <div class="contact-icon">📝</div>
+      <h3>Подключение ОО</h3>
+      <p>Заполните заявку на подключение школы</p>
+      <button class="login-btn" style="margin-top: 20px; width: 100%;" onclick="openOuModal()">Подать заявку</button>
     </div>
   </div>
 
+  <div class="admin-panel" id="ouAdminPanel" style="display: none; margin-top: 50px;">
+    <h2>Заявки от ОО</h2>
+    <div class="staff-list" id="ouApplicationsList"></div>
+  </div>
+</section>
+
+<!-- РАБОТА У НАС -->
+<section class="page" id="page-jobs">
+  <h2 class="section-title">Работа у нас</h2>
+  <p class="section-sub">На этом разделе публикуются открытые вакансии в МРОО "ЦРО"</p>
+  
+  <div class="admin-panel" id="jobsAdminPanel" style="display: none;">
+    <h2>Управление вакансиями</h2>
+    <div class="staff-form">
+      <input type="text" id="vacTitle" placeholder="Название вакансии">
+      <input type="text" id="vacDesc" placeholder="Суть работы">
+      <input type="text" id="vacCond" placeholder="Условия работы (график, опыт, возраст)">
+      <button onclick="addVacancy()">Добавить вакансию</button>
+    </div>
+  </div>
+  <div class="systems" id="vacanciesGrid"></div>
+
+  <div class="admin-panel" id="applicationsAdminPanel" style="display: none; margin-top: 50px; border-color: var(--pink-light);">
+    <h2>Заявки на трудоустройство</h2>
+    <div class="staff-list" id="applicationsList"></div>
+  </div>
+</section>
+
+<!-- КОНТАКТЫ -->
+<section class="page" id="page-contacts">
+  <h2 class="section-title">Контакты</h2>
+  <p class="section-sub">Свяжитесь с нами удобным способом</p>
+  <div class="contact-cards">
+    <div class="contact-card"><div class="contact-icon">📍</div><h3>Наш центральный офис</h3><p>Свердловская область,<br>г. Екатеринбург,<br>ул. Титова, д. 33А</p></div>
+    <div class="contact-card"><div class="contact-icon">📞</div><h3>Единый информационный центр</h3><p>Звоните нам с 10:00 до 18:00</p><a href="tel:+79506573472" class="contact-link">+7 950 657 34 72</a></div>
+    <div class="contact-card"><div class="contact-icon">✉️</div><h3>Единая электронная почта</h3><p>Для официальных обращений</p><a href="mailto:mroo.croof@mail.ru" class="contact-link">mroo.croof@mail.ru</a></div>
+    <div class="contact-card"><div class="contact-icon">🛠️</div><h3>Техническая поддержка</h3><p>По вопросам работы сайта</p><a href="mailto:tehpod-mroo@ro.ru" class="contact-link">tehpod-mroo@ro.ru</a></div>
+    <div class="contact-card"><div class="contact-icon">🔵</div><h3>Единое VK-сообщество</h3><p>Контроль информации и доступ к системам</p><a href="https://vk.ru/mroocroo" target="_blank" class="login-btn" style="margin-top: 15px; display: inline-block; padding: 10px 20px; text-decoration: none;">Перейти в VK</a></div>
+  </div>
+</section>
+
+<!-- ПАНЕЛЬ СОТРУДНИКОВ -->
+<section class="page" id="page-admin">
+  <h2 class="section-title">Сотрудники</h2>
+  <p class="section-sub">Управление доступом (Только для Разработчиков)</p>
+  <div class="admin-panel">
+    <h2>Системные настройки</h2>
+    <button id="freezeBtn" class="btn-freeze" onclick="toggleFreeze()">Заморозить сайт</button>
+
+    <h2 style="margin-top: 30px;">Список сотрудников</h2>
+    <div class="staff-list" id="staffList"></div>
+    
+    <h2 style="margin-top: 30px;">Добавить сотрудника</h2>
+    <div class="staff-form">
+      <input type="text" id="newFio" placeholder="ФИО">
+      <input type="text" id="newLogin" placeholder="Логин">
+      <input type="password" id="newPass" placeholder="Пароль">
+      <select id="newRole">
+        <option value="boss">Руководитель</option>
+        <option value="dev">Разработчик</option>
+      </select>
+      <button onclick="addEmployee()">Добавить сотрудника</button>
+    </div>
+  </div>
+</section>
+
+<!-- МОДАЛКИ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-content auth-form">
+    <div class="auth-icon">🔐</div>
+    <h3>Вход в систему</h3>
+    <p class="auth-subtitle">Доступ только для администрации</p>
+    <div class="auth-input-group">
+      <span class="auth-input-icon">👤</span>
+      <input type="text" id="loginUser" class="form-control auth-input" placeholder="Логин" value="admin">
+    </div>
+    <div class="auth-input-group">
+      <span class="auth-input-icon">🔑</span>
+      <input type="password" id="loginPass" class="form-control auth-input" placeholder="Пароль" value="admin">
+    </div>
+    <div class="form-actions" style="margin-top: 30px;">
+      <button class="btn-cancel" onclick="closeModal('loginModal')">Отмена</button>
+      <button class="btn-submit" onclick="doLogin()">Войти →</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="applyModal">
+  <div class="modal-content">
+    <h3>Анкета соискателя</h3>
+    <div class="form-group"><label>ФИО</label><input type="text" id="appFio" class="form-control"></div>
+    <div class="form-group"><label>Опыт работы</label><input type="text" id="appExp" class="form-control"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('applyModal')">Отмена</button>
+      <button class="btn-submit" onclick="submitApplication()">Отправить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ouModal">
+  <div class="modal-content">
+    <h3>Подключение ОО</h3>
+    <div class="form-group"><label>Краткое название</label><input type="text" id="ouShort" class="form-control"></div>
+    <div class="form-group"><label>Полное название</label><input type="text" id="ouFull" class="form-control"></div>
+    <div class="form-group"><label>ФИО Директора</label><input type="text" id="ouDir" class="form-control"></div>
+    <div class="form-group"><label>Телефон ОО</label><input type="tel" id="ouPhone" class="form-control"></div>
+    <div class="form-group"><label>Почта ОО (туда придет ответ)</label><input type="email" id="ouEmail" class="form-control"></div>
+    <div class="form-group"><label>Ссылка на ВК директора (туда придет ответ)</label><input type="text" id="ouVk" class="form-control"></div>
+    <div class="form-group">
+      <label>Желаемая система</label>
+      <select id="ouSystem" class="form-control">
+        <option value="АИС Онлайн">АИС "Онлайн"</option>
+        <option value="АИС Умный класс">АИС "Умный класс"</option>
+        <option value="АИС ЭлЖур">АИС "ЭлЖур"</option>
+        <option value="АИС Современный педагог">АИС "Современный педагог"</option>
+        <option value="АИС ЭжЖуравль">АИС "ЭжЖуравль"</option>
+        <option value="ОРИС TutorTut">ОРИС "TutorTut"</option>
+        <option value="ЭЖ Филин">ЭЖ "Филин"</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('ouModal')">Отмена</button>
+      <button class="btn-submit" onclick="submitOuApplication()">Отправить заявку</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="linkOuModal">
+  <div class="modal-content">
+    <h3>Привязка ОО</h3>
+    <p style="color: var(--text-dim); text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Введите код из письма</p>
+    <div class="form-group"><label>Уникальный код</label><input type="text" id="linkCode" class="form-control" placeholder="Например: A1B2C3"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('linkOuModal')">Отмена</button>
+      <button class="btn-submit" onclick="verifyCode()">Проверить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmDataModal">
+  <div class="modal-content">
+    <h3>Проверьте данные</h3>
+    <div class="confirm-data" id="confirmDataContent" style="color: #fff; margin-bottom: 20px;"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('confirmDataModal')">Отмена</button>
+      <button class="btn-submit" onclick="confirmLink()">Привязать ОО</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-content" style="text-align: center; border-color: var(--success);">
+    <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+    <h3 style="color: var(--success);">Добро пожаловать в нашу семью!</h3>
+    <p style="color: var(--text-dim); margin-bottom: 20px;">Ваше ОО успешно привязано к системе.</p>
+    <button class="btn-submit" onclick="closeModal('welcomeModal')">Отлично!</button>
+  </div>
+</div>
+
+<div class="letter-overlay" id="letterModal">
+  <div class="letter-box">
+    <h3 style="color: var(--success); text-align: center; margin-bottom: 15px;">📧 Письмо для отправки</h3>
+    <div class="letter-text" id="letterText"></div>
+    <div class="letter-actions">
+      <button class="btn-copy" onclick="copyLetter()">📋 Скопировать</button>
+      <button class="btn-close-letter" onclick="closeLetterModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal-content" style="text-align: center; border-color: var(--blue-light);">
+    <h3>Заявка отправлена!</h3>
+    <p style="color: var(--text-dim); margin: 20px 0;">Ваш номер обращения в поддержку:</p>
+    <div id="ticketNumber" style="font-size: 2rem; font-weight: 800; color: var(--pink-light); letter-spacing: 2px; margin-bottom: 20px;"></div>
+    <button class="btn-submit" onclick="closeModal('ticketModal')">Понятно</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Общественная организация с 23 мая 2026</p>
+  <p>© 2026 МРОО «Центр развития образования». Все права защищены.</p>
+</footer>
+
+<!-- ================= FIREBASE ================= -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc, deleteDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC5B2mAOHU9rKVfvXLbcFWFSDbJiiBxMT8",
+    authDomain: "mroo-rco.firebaseapp.com",
+    projectId: "mroo-rco",
+    storageBucket: "mroo-rco.firebasestorage.app",
+    messagingSenderId: "204172115670",
+    appId: "1:204172115670:web:fd6388088d3b2e1e689377"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.db = db;
+  window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc; window.updateDoc = updateDoc;
+  window.collection = collection; window.getDocs = getDocs; window.addDoc = addDoc; window.deleteDoc = deleteDoc; window.onSnapshot = onSnapshot;
+  window.dispatchEvent(new Event('firebaseReady'));
+</script>
+
+<script>
+// ================= ПЕРЕМЕННЫЕ =================
+const ADMIN_LOGIN = "admin";
+const ADMIN_PASS = "admin";
+let currentUser = null;
+let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], frozen: false };
+
+// ================= МЕНЮ =================
+function toggleMenu(e) {
+  e.stopPropagation();
+  document.getElementById('dropdownMenu').classList.toggle('show');
+}
+function closeMenu() {
+  document.getElementById('dropdownMenu').classList.remove('show');
+}
+window.addEventListener('click', function(e) {
+  const menu = document.getElementById('dropdownMenu');
+  const btn = document.querySelector('.menu-btn');
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('show');
+  }
+});
+
+// ================= ИНИЦИАЛИЗАЦИЯ =================
+async function initApp() {
+  try {
+    window.onSnapshot(window.doc(window.db, "settings", "main"), (docSnap) => {
+      dbData.frozen = docSnap.exists() ? docSnap.data().frozen : false;
+      updateUI();
+    });
+
+    window.onSnapshot(window.collection(window.db, "users"), (snapshot) => {
+      dbData.users = [];
+      snapshot.forEach(doc => dbData.users.push({ id: doc.id, ...doc.data() }));
+      updateUI();
+    });
+
+    window.onSnapshot(window.collection(window.db, "vacancies"), (snapshot) => {
+      dbData.vacancies = [];
+      snapshot.forEach(doc => dbData.vacancies.push({ id: doc.id, ...doc.data() }));
+      renderVacancies();
+    });
+
+    window.onSnapshot(window.collection(window.db, "team"), (snapshot) => {
+      dbData.team = [];
+      snapshot.forEach(doc => dbData.team.push({ id: doc.id, ...doc.data() }));
+      renderTeamHierarchy();
+      renderTeamAdminList();
+    });
+
+    window.onSnapshot(window.collection(window.db, "orgApplications"), (snapshot) => {
+      dbData.orgApplications = [];
+      snapshot.forEach(doc => dbData.orgApplications.push({ id: doc.id, ...doc.data() }));
+      renderOOList();
+      renderOuApplications();
+    });
+
+    const savedUser = localStorage.getItem('cro_user');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      updateUI();
+    }
+    renderSystems();
+  } catch (e) { console.error("Ошибка:", e); }
+}
+window.addEventListener('firebaseReady', () => { initApp(); });
+
+// ================= НАВИГАЦИЯ =================
+function showPage(pageId) {
+  if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') return;
+
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.getElementById("page-" + pageId);
+  if (target) target.classList.add("active");
+  
+  document.querySelectorAll(".nav a, .dropdown-menu a").forEach(a => a.classList.toggle("active", a.dataset.page === pageId));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ================= ВХОД =================
+function openLoginModal() { document.getElementById('loginModal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function doLogin() {
+  const login = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+
+  if (login === ADMIN_LOGIN && pass === ADMIN_PASS) {
+    currentUser = { role: 'dev', title: 'Главный разработчик', login: 'admin' };
+    localStorage.setItem('cro_user', JSON.stringify(currentUser));
+    closeModal('loginModal');
+    updateUI();
+    showWelcomeToast('Цихончик Кирилл Сергеевич');
+    showPage('home');
+    return;
+  }
+
+  const user = dbData.users.find(u => u.login === login && u.pass === pass);
+  if (user) {
+    currentUser = user;
+    localStorage.setItem('cro_user', JSON.stringify(user));
+    closeModal('loginModal');
+    updateUI();
+    showWelcomeToast(user.fio);
+    showPage('home');
+  } else {
+    alert('Неверный логин или пароль!');
+  }
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('cro_user');
+  updateUI();
+  showPage('home');
+}
+
+// ================= ПРИВЕТСТВИЕ =================
+function showWelcomeToast(name) {
+  const old = document.getElementById('welcomeToast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.id = 'welcomeToast';
+  t.className = 'welcome-toast';
+  t.innerHTML = `<div class="toast-icon">👑</div><div class="toast-content"><div class="toast-title" style="color:var(--gold);font-size:0.8rem;font-weight:700;">Добро пожаловать!</div><div class="toast-name">${name}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 100);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 500); }, 4000);
+}
+
+// ================= ОБНОВЛЕНИЕ UI =================
+function updateUI() {
+  const loginBtn = document.getElementById('loginBtn');
+  const userBadge = document.getElementById('userBadge');
+  const userName = document.getElementById('userName');
+  const jobsAdminPanel = document.getElementById('jobsAdminPanel');
+  const appsAdminPanel = document.getElementById('applicationsAdminPanel');
+  const ouAdminPanel = document.getElementById('ouAdminPanel');
+  const teamAdminPanel = document.getElementById('teamAdminPanel');
+  const dropdown = document.getElementById('dropdownMenu');
+
+  // Удаляем ссылку "Сотрудники" из выпадающего меню, если она есть
+  const oldAdminLink = dropdown.querySelector('a[data-page="admin"]');
+  if (oldAdminLink) oldAdminLink.remove();
+
+  if (currentUser) {
+    loginBtn.style.display = 'none';
+    userBadge.classList.add('active');
+    userName.textContent = `${currentUser.title} (${currentUser.login})`;
+
+    if (currentUser.role === 'dev') {
+      // Добавляем кнопку "Сотрудники" в выпадающее меню
+      const adminLink = document.createElement('a');
+      adminLink.dataset.page = 'admin';
+      adminLink.textContent = 'Сотрудники';
+      adminLink.onclick = () => { showPage('admin'); closeMenu(); };
+      dropdown.appendChild(adminLink);
+
+      jobsAdminPanel.style.display = 'block';
+      appsAdminPanel.style.display = 'block';
+      ouAdminPanel.style.display = 'block';
+      teamAdminPanel.style.display = 'block';
+      updateFreezeBtn();
+    } else if (currentUser.role === 'boss') {
+      jobsAdminPanel.style.display = 'block';
+      appsAdminPanel.style.display = 'block';
+      ouAdminPanel.style.display = 'block';
+      teamAdminPanel.style.display = 'block';
+    }
+  } else {
+    loginBtn.style.display = 'block';
+    userBadge.classList.remove('active');
+    jobsAdminPanel.style.display = 'none';
+    appsAdminPanel.style.display = 'none';
+    ouAdminPanel.style.display = 'none';
+    teamAdminPanel.style.display = 'none';
+  }
+
+  // Применяем заморозку
+  if (dbData.frozen) {
+    document.body.classList.add('frozen');
+  } else {
+    document.body.classList.remove('frozen');
+  }
+  
+  renderStaffList();
+  renderTeamAdminList();
+  renderVacancies();
+  renderOOList();
+  renderOuApplications();
+  renderSystems();
+}
+
+// ================= ЗАМОРОЗКА =================
+async function toggleFreeze() {
+  if (!currentUser || currentUser.role !== 'dev') return;
+  await window.setDoc(window.doc(window.db, "settings", "main"), { frozen: !dbData.frozen });
+}
+
+function updateFreezeBtn() {
+  const btn = document.getElementById('freezeBtn');
+  if (!btn) return;
+  if (dbData.frozen) {
+    btn.textContent = 'Разморозить сайт';
+    btn.className = 'btn-unfreeze';
+  } else {
+    btn.textContent = 'Заморозить сайт';
+    btn.className = 'btn-freeze';
+  }
+}
+
+// ================= СИСТЕМЫ =================
+const systemsList = [
+  { id: 'online', name: 'АИС "Онлайн"', icon: '🌐', desc: 'Управление учебным процессом.', photos: ['https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png'], journal: ['Запуск'], func: ['Журнал', 'Расписание', 'Отчёты'] },
+  { id: 'teacher', name: 'АИС "Современный педагог"', icon: '👩‍🏫', desc: 'Проф. развитие учителей.', photos: ['https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png'], journal: ['Курсы'], func: ['Портфолио', 'Аттестация'] },
+  { id: 'eljur', name: 'АИС "ЭлЖур"', icon: '📓', desc: 'Электронные журналы.', photos: ['https://i.ibb.co/9qXyZ2v/2026-10-29-12-58-32.png', 'https://i.ibb.co/9qXyZ2v/2026-10-29-12-58-32.png', 'https://i.ibb.co/9qXyZ2v/2026-10-29-12-58-32.png'], journal: ['Тех. работы'], func: ['Журнал', 'Дневник'], unavailable: true },
+  { id: 'zhuravl', name: 'АИС "ЭжЖуравль"', icon: '🦢', desc: 'Управление организацией.', photos: ['https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png', 'https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png', 'https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png', 'https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png'], journal: [], func: ['Управление', 'Аналитика'] },
+  { id: 'class', name: 'АИС "Умный класс"', icon: '💡', desc: 'Интерактивное обучение.', photos: ['https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png', 'https://i.ibb.co/5K5F5z3/2026-10-29-12-59-02.png'], journal: [], func: ['Уроки', 'Квизы'] },
+  { id: 'tutor', name: 'ОРИС "TutorTut"', icon: '🎓', desc: 'Наставничество.', photos: ['https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png', 'https://i.ibb.co/1JzR4G5/2026-10-29-12-59-58.png'], journal: [], func: ['Поиск', 'Занятия'] },
+  { id: 'filin', name: 'ЭЖ "Филин"', icon: '🦉', desc: 'Современный журнал.', photos: [], journal: [], func: ['Журнал', 'Отчёты'] }
+];
+
+function renderSystems() {
+  const grid = document.getElementById('systemsGrid');
+  if (!grid) return;
+  grid.innerHTML = systemsList.map(s => `
+    <div class="system-card" onclick="openSystem('${s.id}')">
+      <div class="system-icon">${s.icon}</div>
+      <h3>${s.name}</h3><p>${s.desc}</p>
+      ${s.unavailable ? '<span class="badge-danger">⚠ Система временно не предоставляется</span>' : ''}
+    </div>`).join('');
+}
+
+function openSystem(id) {
+  const s = systemsList.find(x => x.id === id);
+  if (!s) return;
+  const content = document.getElementById('systemDetailContent');
+  content.innerHTML = `
+    <div class="detail-header"><div class="detail-icon">${s.icon}</div><h1>${s.name}</h1></div>
+    ${s.unavailable ? '<div class="detail-danger">⚠ Система временно не предоставляется</div>' : ''}
+    <div class="gallery">${s.photos.length > 0 ? s.photos.map(p => `<img src="${p}" onerror="this.style.display='none'">`).join('') : '<p style="color:var(--text-dim);text-align:center;width:100%">Фото временно отсутствуют</p>'}</div>
+    <div class="info-block"><h2>📋 Функционал</h2><ul>${s.func.map(f => `<li>${f}</li>`).join('')}</ul></div>
+    <div class="info-block"><h2>📰 Журнал</h2><ul>${s.journal.length > 0 ? s.journal.map(j => `<li>${j}</li>`).join('') : '<li>Событий пока нет</li>'}</ul></div>
+    <button class="back-btn" onclick="showPage('systems')">← Назад</button>
+  `;
+  showPage('system-detail');
+}
+
+// ================= КОМАНДА =================
+function renderTeamHierarchy() {
+  const container = document.getElementById('teamHierarchy');
+  if (!container) return;
+  const boss = dbData.team.find(m => m.role === 'Руководитель');
+  const deputy = dbData.team.find(m => m.role === 'Заместитель руководителя');
+  const chairman = dbData.team.find(m => m.role === 'Председатель');
+
+  const createCard = (person, isBoss = false) => {
+    if (!person) return `<div class="team-card" style="opacity: 0.5;"><div class="team-avatar">👤</div><h3>Вакантно</h3><p>${isBoss ? 'Руководитель' : 'Должность'}</p></div>`;
+    return `
+      <div class="team-card">
+        ${isBoss ? '<div class="crown">👑</div>' : ''}
+        <div class="team-avatar">${person.photo ? `<img src="${person.photo}">` : '👤'}</div>
+        <h3>${person.fio}</h3>
+        <p>${person.role}</p>
+        <small>${person.slogan || ''}</small>
+        ${isBoss ? `<button class="contact-manager-btn" onclick="contactBoss()">Обратиться к руководителю</button>` : ''}
+      </div>`;
+  };
+
+  container.innerHTML = `<div class="team-boss">${createCard(boss, true)}</div><div class="team-lower"><div>${createCard(deputy)}</div><div>${createCard(chairman)}</div></div>`;
+}
+
+function contactBoss() {
+  alert('Для усиления мер безопасности, на данных момент Вы не можете связаться с руководителем системы, но вы можете это сделать через его представителей-менеджеров');
+}
+
+function renderTeamAdminList() {
+  const list = document.getElementById('teamAdminList');
+  if (!list) return;
+  if (dbData.team.length === 0) { list.innerHTML = '<p style="color:var(--text-dim)">Список пуст.</p>'; return; }
+  list.innerHTML = dbData.team.map(m => `
+    <div class="staff-item" style="border-left-color:${m.role === 'Руководитель' ? 'var(--gold)' : 'var(--success)'}">
+      <div><span>${m.fio}</span><small>${m.role}</small></div>
+      <button style="background:transparent;border:1px solid var(--danger);color:var(--danger);padding:5px 10px;border-radius:5px;" onclick="deleteTeamMember('${m.id}')">Удалить</button>
+    </div>
+  `).join('');
+}
+
+async function addTeamMember() {
+  const fio = document.getElementById('teamFio').value.trim();
+  const role = document.getElementById('teamRole').value;
+  const slogan = document.getElementById('teamSlogan').value.trim();
+  const photo = document.getElementById('teamPhoto').value.trim();
+  if (!fio) { alert('Введите ФИО'); return; }
+  await window.addDoc(window.collection(window.db, "team"), { fio, role, slogan, photo });
+  document.getElementById('teamFio').value = ''; document.getElementById('teamSlogan').value = ''; document.getElementById('teamPhoto').value = '';
+}
+
+async function deleteTeamMember(id) {
+  if (confirm('Удалить?')) await window.deleteDoc(window.doc(window.db, "team", id));
+}
+
+// ================= ОО =================
+function renderOOList() {
+  const grid = document.getElementById('ooGrid');
+  if (!grid) return;
+  const linked = dbData.orgApplications.filter(a => a.status === 'linked');
+  if (linked.length === 0) { grid.innerHTML = '<p style="color:var(--text-dim);text-align:center;width:100%;grid-column:1/-1">Пока нет подключенных организаций.</p>'; return; }
+  grid.innerHTML = linked.map(o => `
+    <div class="oo-card">
+      ${o.dirPhoto ? `<img src="${o.dirPhoto}">` : '<div style="font-size:3rem;margin-bottom:10px">🏫</div>'}
+      <h3>${o.shortName}</h3>
+      <p><strong>Директор:</strong> ${o.dir}</p>
+      <p><strong>Почта:</strong> <a href="mailto:${o.email}" style="color:var(--pink-light)">${o.email}</a></p>
+    </div>
+  `).join('');
+}
+
+// ================= ВАКАНСИИ =================
+function renderVacancies() {
+  const grid = document.getElementById('vacanciesGrid');
+  if (!grid) return;
+  if (dbData.vacancies.length === 0) { grid.innerHTML = '<p style="color:var(--text-dim);text-align:center;width:100%;grid-column:1/-1">На данный момент вакансий нет.</p>'; return; }
+  grid.innerHTML = dbData.vacancies.map(v => `
+    <div class="system-card">
+      <h3 style="color:var(--pink-light)">${v.title}</h3>
+      <p><strong>Суть:</strong> ${v.desc}</p>
+      <p><strong>Условия:</strong> ${v.cond}</p>
+      <button class="login-btn" style="margin-top:15px;width:100%" onclick="openApplyModal('${v.title}')">Откликнуться</button>
+      ${currentUser?.role === 'dev' || currentUser?.role === 'boss' ? `<button style="margin-top:10px;width:100%;background:transparent;border:1px solid var(--danger);color:var(--danger);padding:10px;border-radius:10px" onclick="deleteVacancy('${v.id}')">Удалить</button>` : ''}
+    </div>
+  `).join('');
+}
+
+async function addVacancy() {
+  const title = document.getElementById('vacTitle').value.trim();
+  const desc = document.getElementById('vacDesc').value.trim();
+  const cond = document.getElementById('vacCond').value.trim();
+  if (!title || !desc || !cond) { alert('Заполните поля'); return; }
+  await window.addDoc(window.collection(window.db, "vacancies"), { title, desc, cond });
+  document.getElementById('vacTitle').value = ''; document.getElementById('vacDesc').value = ''; document.getElementById('vacCond').value = '';
+}
+
+async function deleteVacancy(id) {
+  if (confirm('Удалить?')) await window.deleteDoc(window.doc(window.db, "vacancies", id));
+}
+
+function openApplyModal(title) {
+  window.currentVacancy = title;
+  document.getElementById('applyModal').classList.add('show');
+}
+
+async function submitApplication() {
+  const fio = document.getElementById('appFio').value.trim();
+  const exp = document.getElementById('appExp').value.trim();
+  if (!fio || !exp) { alert('Заполните поля'); return; }
+  await window.addDoc(window.collection(window.db, "applications"), { vacancy: window.currentVacancy, fio, exp });
+  closeModal('applyModal'); alert('Заявка отправлена!');
+  document.getElementById('appFio').value = ''; document.getElementById('appExp').value = '';
+}
+
+// ================= ЗАЯВКИ ОУ =================
+function openOuModal() { document.getElementById('ouModal').classList.add('show'); }
+function openLinkOuModal() { document.getElementById('linkOuModal').classList.add('show'); }
+
+async function submitOuApplication() {
+  const shortName = document.getElementById('ouShort').value.trim();
+  const fullName = document.getElementById('ouFull').value.trim();
+  const dir = document.getElementById('ouDir').value.trim();
+  const phone = document.getElementById('ouPhone').value.trim();
+  const email = document.getElementById('ouEmail').value.trim();
+  const vk = document.getElementById('ouVk').value.trim();
+  const system = document.getElementById('ouSystem').value;
+  
+  if (!shortName || !dir || !email) { alert('Заполните обязательные поля'); return; }
+
+  const ticket = Math.floor(100000 + Math.random() * 900000);
+  
+  await window.addDoc(window.collection(window.db, "orgApplications"), { 
+    shortName, fullName, dir, phone, email, vk, system, status: 'pending', ticket
+  });
+  
+  closeModal('ouModal');
+  document.getElementById('ticketNumber').innerText = ticket;
+  document.getElementById('ticketModal').classList.add('show');
+  
+  document.getElementById('ouShort').value = ''; document.getElementById('ouFull').value = ''; document.getElementById('ouDir').value = '';
+  document.getElementById('ouPhone').value = ''; document.getElementById('ouEmail').value = ''; document.getElementById('ouVk').value = '';
+}
+
+function renderOuApplications() {
+  const list = document.getElementById('ouApplicationsList');
+  if (!list) return;
+  if (dbData.orgApplications.length === 0) { list.innerHTML = '<p style="color:var(--text-dim)">Новых заявок нет.</p>'; return; }
+  
+  list.innerHTML = dbData.orgApplications.map(a => `
+    <div class="staff-item" style="border-left-color:${a.status === 'approved' ? 'var(--success)' : (a.status === 'rejected' ? 'var(--danger)' : 'orange')}">
+      <div>
+        <span>${a.shortName}</span>
+        <small><b>Директор:</b> ${a.dir}</small>
+        <small><b>Тикет:</b> ${a.ticket}</small>
+        <small><b>Статус:</b> ${a.status === 'approved' ? 'Одобрено (Код: ' + a.code + ')' : (a.status === 'rejected' ? 'Отклонено' : (a.status === 'linked' ? 'Привязано' : 'В ожидании'))}</small>
+      </div>
+      ${a.status === 'pending' ? `
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <button style="background:var(--success);border:none;color:#000;padding:5px 10px;border-radius:5px" onclick="processOu('${a.id}', 'approved', '${a.email}', '${a.shortName}')">Одобрить</button>
+        <button style="background:transparent;border:1px solid var(--danger);color:var(--danger);padding:5px 10px;border-radius:5px" onclick="processOu('${a.id}', 'rejected', '${a.email}', '${a.shortName}')">Отклонить</button>
+      </div>` : ''}
+    </div>
+  `).join('');
+}
+
+async function processOu(id, status, email, name) {
+  if (!confirm(`Вы уверены?`)) return;
+  let code = "";
+  let text = "";
+  
+  if (status === 'approved') {
+    code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    text = `Здравствуйте!\nВаша заявка на подключение "${name}" ОДОБРЕНА.\nКод для привязки: ${code}\n\nС уважением, ЦРО.`;
+  } else {
+    text = `Здравствуйте!\nК сожалению, ваша заявка "${name}" ОТКЛОНЕНА.\n\nС уважением, ЦРО.`;
+  }
+
+  await window.setDoc(window.doc(window.db, "orgApplications", id), { status, code }, { merge: true });
+  showLetterModal(text);
+}
+
+// ================= ПРИВЯЗКА =================
+let tempOuData = null;
+
+async function verifyCode() {
+  const code = document.getElementById('linkCode').value.trim().toUpperCase();
+  if (!code) return;
+  
+  const found = dbData.orgApplications.find(a => a.code === code && a.status === 'approved');
+  
+  if (found) {
+    tempOuData = found;
+    closeModal('linkOuModal');
+    document.getElementById('confirmDataContent').innerHTML = `
+      <p><b>Название:</b> ${found.shortName}</p>
+      <p><b>Директор:</b> ${found.dir}</p>
+      <p><b>Система:</b> ${found.system}</p>
+    `;
+    document.getElementById('confirmDataModal').classList.add('show');
+  } else {
+    alert('Код не найден или заявка не одобрена');
+  }
+}
+
+async function confirmLink() {
+  if (!tempOuData) return;
+  await window.setDoc(window.doc(window.db, "orgApplications", tempOuData.id), { status: 'linked' }, { merge: true });
+  closeModal('confirmDataModal');
+  document.getElementById('welcomeModal').classList.add('show');
+}
+
+// ================= СОТРУДНИКИ =================
+function renderStaffList() {
+  const list = document.getElementById('staffList');
+  if (!list) return;
+  list.innerHTML = dbData.users.map(u => `
+    <div class="staff-item">
+      <div><span>${u.fio}</span><small>${u.role}</small></div>
+      <button style="background:transparent;border:1px solid var(--danger);color:var(--danger);padding:5px 10px;border-radius:5px" onclick="deleteEmployee('${u.id}')">Удалить</button>
+    </div>
+  `).join('');
+}
+
+async function addEmployee() {
+  const fio = document.getElementById('newFio').value.trim();
+  const login = document.getElementById('newLogin').value.trim();
+  const pass = document.getElementById('newPass').value.trim();
+  const role = document.getElementById('newRole').value;
+
+  if (!fio || !login || !pass) { alert('Заполните все поля'); return; }
+  await window.addDoc(window.collection(window.db, "users"), { fio, login, pass, role, title: role === 'boss' ? 'Руководитель' : 'Разработчик' });
+  document.getElementById('newFio').value = ''; document.getElementById('newLogin').value = ''; document.getElementById('newPass').value = '';
+  alert('Сотрудник добавлен!');
+}
+
+async function deleteEmployee(id) {
+  if (confirm('Удалить?')) await window.deleteDoc(window.doc(window.db, "users", id));
+}
+
+// ================= ПИСЬМО =================
+function showLetterModal(text) {
+  document.getElementById('letterText').innerText = text;
+  document.getElementById('letterModal').classList.add('show');
+}
+
+function closeLetterModal() {
+  document.getElementById('letterModal').classList.remove('show');
+}
+
+function copyLetter() {
+  navigator.clipboard.writeText(document.getElementById('letterText').innerText);
+  alert('Текст скопирован!');
+}
+
+// ================= СТАРТ =================
+window.onload = () => {
+  const saved = localStorage.getItem('cro_user');
+  if (saved) currentUser = JSON.parse(saved);
+  updateUI();
+};
+</script>
 </body>
 </html>
