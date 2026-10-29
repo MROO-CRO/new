@@ -15,7 +15,7 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: "Segoe UI", "Inter", sans-serif; background: linear-gradient(160deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
-  color: var(--text); min-height: 100vh; overflow-x: hidden; position: relative;
+  color: var(--text); min-height: 100vh; overflow-x: hidden; position: relative; display: flex; flex-direction: column;
 }
 .bg-glow { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.45; z-index: 0; animation: float 14s ease-in-out infinite; pointer-events: none; }
 .glow-1 { width: 500px; height: 500px; background: var(--violet); top: -150px; left: -100px; }
@@ -44,7 +44,7 @@ body {
 .btn-freeze { background: var(--danger); color: #fff; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
 .btn-unfreeze { background: var(--success); color: var(--bg-deep); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
 
-.page { display: none; position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; padding: 60px 24px 100px; animation: fadeIn 0.5s ease both; }
+.page { display: none; position: relative; z-index: 2; flex: 1; max-width: 1100px; margin: 0 auto; padding: 60px 24px 100px; animation: fadeIn 0.5s ease both; width: 100%; }
 .page.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -199,6 +199,20 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
 .confirm-data p { color: var(--text-dim); margin-bottom: 10px; font-size: 1rem; }
 .confirm-data strong { color: #fff; }
+
+/* ФУТЕР */
+.footer {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 30px 20px;
+  border-top: 1px solid rgba(157, 107, 255, 0.15);
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  background: rgba(10, 6, 32, 0.4);
+  margin-top: auto;
+}
+.footer p { margin: 5px 0; }
 
 @media (max-width: 900px) {
   .header { flex-direction: column; gap: 12px; padding: 14px 4vw; }
@@ -504,6 +518,12 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
+<!-- ФУТЕР -->
+<footer class="footer">
+  <p>Общественная организация с 23 мая 2026</p>
+  <p>© 2026 МРОО «Центр развития образования». Все права защищены.</p>
+</footer>
+
 <!-- ПОДКЛЮЧЕНИЕ EMAILJS -->
 <script type="module">
   import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
@@ -528,7 +548,6 @@ function loadData() {
     dbData.users = [{ login: 'admin', pass: 'admin', role: 'dev', degree: 'main', title: 'Главный разработчик', fio: 'Системный администратор', dob: '1990-01-01' }];
     saveData();
   }
-  // ИСПОЛЬЗУЕМ LOCALSTORAGE ВМЕСТО SESSIONSTORAGE, ЧТОБЫ НЕ ВЫХОДИЛО ПРИ ПЕРЕЗАГРУЗКЕ
   const savedUser = localStorage.getItem('cro_user');
   if (savedUser) currentUser = JSON.parse(savedUser);
 }
@@ -621,7 +640,6 @@ const systemsList = [
 function showPage(pageId) {
   if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') return;
   
-  // Заместитель видит только главную и вакансии
   if (currentUser?.role === 'zam' && pageId !== 'jobs' && pageId !== 'home') return;
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -866,7 +884,6 @@ function addTeamMember() {
   
   if (!fio) { alert('Заполните ФИО!'); return; }
 
-  // Проверка, чтобы не было двух руководителей
   if (role === 'Руководитель' && dbData.team.some(m => m.role === 'Руководитель')) {
     alert('Руководитель уже назначен!'); return;
   }
@@ -1142,4 +1159,4 @@ window.onload = () => {
 };
 </script>
 </body>
-                              </html>
+</html>
