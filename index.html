@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>МРОО «Центр развития образования»</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/6PZ6K5R/2026-10-29-12-59-45.png">
 <style>
 /* ================= БАЗА ================= */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -452,11 +453,13 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
     <p class="auth-subtitle">Доступ только для администрации</p>
     <div class="auth-input-group">
       <span class="auth-input-icon">👤</span>
-      <input type="text" id="loginUser" class="form-control auth-input" placeholder="Логин" value="admin">
+      <!-- Убрали value="admin" -->
+      <input type="text" id="loginUser" class="form-control auth-input" placeholder="Логин">
     </div>
     <div class="auth-input-group">
       <span class="auth-input-icon">🔑</span>
-      <input type="password" id="loginPass" class="form-control auth-input" placeholder="Пароль" value="admin">
+      <!-- Убрали value="admin" -->
+      <input type="password" id="loginPass" class="form-control auth-input" placeholder="Пароль">
     </div>
     <div class="form-actions" style="margin-top: 30px;">
       <button class="btn-cancel" onclick="closeModal('loginModal')">Отмена</button>
@@ -609,7 +612,8 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body
 <script>
 // ================= ПЕРЕМЕННЫЕ =================
 const ADMIN_LOGIN = "admin";
-const ADMIN_PASS = "admin";
+// НОВЫЙ ПАРОЛЬ (9 символов)
+const ADMIN_PASS = "Cro_Admin9"; 
 let currentUser = null;
 let dbData = { users: [], vacancies: [], applications: [], orgApplications: [], team: [], announcements: [], frozen: false };
 
