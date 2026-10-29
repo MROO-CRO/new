@@ -68,17 +68,13 @@ body {
 .hero-subtitle { font-size: clamp(1rem, 2.2vw, 1.25rem); color: var(--text-dim); max-width: 650px; margin: 0 auto 50px; line-height: 1.6; text-align: center; animation: slideUp 1s ease 0.3s both; }
 .hero-subtitle strong { color: var(--pink-light); }
 
-.about-card { position: relative; text-align: left; background: rgba(30, 15, 70, 0.55); border: 1px solid rgba(176, 107, 255, 0.25); border-radius: 24px; padding: 40px; backdrop-filter: blur(14px); box-shadow: 0 20px 60px rgba(0,0,0,0.45); animation: slideUp 1s ease 0.6s both; overflow: hidden; }
-.about-card::before { content: ""; position: absolute; top: 0; left: 0; height: 3px; width: 100%; background: linear-gradient(90deg, transparent, var(--violet-light), var(--pink-light), transparent); animation: sweep 3s linear infinite; }
-@keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
 .section-title { text-align: center; font-size: clamp(1.8rem, 4.5vw, 2.8rem); margin-bottom: 20px; background: linear-gradient(90deg, var(--violet-light), var(--pink-light), var(--blue-light)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .section-sub { text-align: center; color: var(--text-dim); margin-bottom: 50px; font-size: 1.05rem; }
 
 /* ТЕХ РАБОТЫ */
 .tech-works { display: none; text-align: center; margin: 60px auto; background: rgba(30, 15, 70, 0.8); border: 2px solid var(--danger); padding: 60px 40px; border-radius: 24px; max-width: 700px; box-shadow: 0 0 50px rgba(255, 77, 109, 0.2); }
 body.frozen .tech-works { display: block; }
-body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, body.frozen .cta-wrap { display: none; }
+body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .cta-wrap, body.frozen #homeCards { display: none; }
 .tech-works h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--danger); margin-bottom: 20px; animation: pulseText 2s infinite; }
 .tech-works p { color: var(--text-dim); font-size: 1.2rem; line-height: 1.6; }
 @keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 109, 0.5); } 50% { opacity: 0.7; text-shadow: 0 0 30px rgba(255, 77, 109, 1); } }
@@ -256,17 +252,27 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
     <h1>Дорогие друзья!</h1>
     <p>Сайт приостановил работу в связи с загрузкой масштабных обновлений!<br>Просим прощения за доставленные неудобства!</p>
   </div>
-  <div class="hero-content">
+  
+  <div id="homeCards">
     <h1 class="hero-title"><span class="line">Кто мы такие?</span></h1>
     <p class="hero-subtitle">Мы — <strong>образовательный портал</strong> для школ, который объединяет педагогов, методистов и учеников в единую цифровую среду.</p>
-    <div class="about-card">
-      <h2 class="about-heading">Наша миссия</h2>
-      <p class="about-text"><span class="reveal">МРОО «Центр развития образования»</span> — это региональная общественная организация, созданная для поддержки и развития системы школьного образования.</p>
-      <ul class="features">
-        <li class="feature"><span>📚</span> Методическая поддержка школ</li>
-        <li class="feature"><span>🎓</span> Повышение квалификации педагогов</li>
-        <li class="feature"><span>🌐</span> Единая цифровая образовательная среда</li>
-      </ul>
+    
+    <div class="advantages">
+      <div class="adv-card">
+        <div class="adv-icon">📚</div>
+        <h3>Методическая поддержка</h3>
+        <p>Комплексная помощь школам в организации учебного процесса и внедрении современных стандартов.</p>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">🎓</div>
+        <h3>Повышение квалификации</h3>
+        <p>Регулярное обучение и профессиональное развитие для педагогов и административного состава.</p>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">🌐</div>
+        <h3>Единая цифровая среда</h3>
+        <p>Объединение всех образовательных организаций в одну безопасную и удобную экосистему.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -442,6 +448,8 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
     <h3>Анкета соискателя</h3>
     <div class="form-group"><label>ФИО</label><input type="text" id="appFio" class="form-control"></div>
     <div class="form-group"><label>Опыт работы</label><input type="text" id="appExp" class="form-control"></div>
+    <div class="form-group"><label>Номер телефона</label><input type="tel" id="appPhone" class="form-control" placeholder="+7 (999) 999-99-99"></div>
+    <div class="form-group"><label>Ссылка на ВК</label><input type="url" id="appVk" class="form-control" placeholder="https://vk.com/username"></div>
     <div class="form-actions">
       <button class="btn-cancel" onclick="closeModal('applyModal')">Отмена</button>
       <button class="btn-submit" onclick="submitApplication()">Отправить</button>
@@ -526,6 +534,26 @@ body.frozen .hero-title, body.frozen .hero-subtitle, body.frozen .about-card, bo
     <p style="color: var(--text-dim); margin: 20px 0;">Ваш номер обращения в поддержку:</p>
     <div id="ticketNumber" style="font-size: 2rem; font-weight: 800; color: var(--pink-light); letter-spacing: 2px; margin-bottom: 20px;"></div>
     <button class="btn-submit" onclick="closeModal('ticketModal')">Понятно</button>
+  </div>
+</div>
+
+<!-- МОДАЛКА «СВЯЗЬ С РУКОВОДИТЕЛЕМ» -->
+<div class="modal-overlay" id="contactBossModal">
+  <div class="modal-content" style="text-align: center; border-color: var(--gold);">
+    <div style="font-size: 3.5rem; margin-bottom: 15px; filter: drop-shadow(0 0 12px rgba(255,215,0,0.6));">👑</div>
+    <h3 style="color: var(--gold);">Связь с руководителем</h3>
+    <p style="color: var(--text-dim); line-height: 1.6; margin: 18px 0 24px; font-size: 0.95rem;">
+      В целях безопасности прямой контакт с руководителем ограничен.<br>
+      Вы можете написать нам в официальное сообщество — сообщение будет передано руководству.
+    </p>
+    <div class="form-actions" style="margin-top: 10px;">
+      <button class="btn-cancel" onclick="closeModal('contactBossModal')">Закрыть</button>
+      <a href="https://vk.ru/mroocroo" target="_blank" rel="noopener"
+         class="btn-submit"
+         style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:linear-gradient(135deg,var(--blue),var(--violet));">
+        🔵 Написать в VK
+      </a>
+    </div>
   </div>
 </div>
 
@@ -829,7 +857,7 @@ function renderTeamHierarchy() {
 }
 
 function contactBoss() {
-  alert('Для усиления мер безопасности, на данных момент Вы не можете связаться с руководителем системы, но вы можете это сделать через его представителей-менеджеров');
+  document.getElementById('contactBossModal').classList.add('show');
 }
 
 function renderTeamAdminList() {
@@ -863,15 +891,31 @@ function renderOOList() {
   const grid = document.getElementById('ooGrid');
   if (!grid) return;
   const linked = dbData.orgApplications.filter(a => a.status === 'linked');
-  if (linked.length === 0) { grid.innerHTML = '<p style="color:var(--text-dim);text-align:center;width:100%;grid-column:1/-1">Пока нет подключенных организаций.</p>'; return; }
+  if (linked.length === 0) {
+    grid.innerHTML = '<p style="color:var(--text-dim);text-align:center;width:100%;grid-column:1/-1">Пока нет подключенных организаций.</p>';
+    return;
+  }
+  const isDev = currentUser?.role === 'dev';
   grid.innerHTML = linked.map(o => `
     <div class="oo-card">
       ${o.dirPhoto ? `<img src="${o.dirPhoto}">` : '<div style="font-size:3rem;margin-bottom:10px">🏫</div>'}
       <h3>${o.shortName}</h3>
       <p><strong>Директор:</strong> ${o.dir}</p>
       <p><strong>Почта:</strong> <a href="mailto:${o.email}" style="color:var(--pink-light)">${o.email}</a></p>
+      ${isDev ? `<button style="margin-top:14px;background:transparent;border:1px solid var(--danger);color:var(--danger);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.85rem;width:100%;" onclick="deleteLinkedOO('${o.id}', '${o.shortName.replace(/'/g, "\\'")}')">Удалить ОО</button>` : ''}
     </div>
   `).join('');
+}
+
+async function deleteLinkedOO(id, name) {
+  if (!currentUser || currentUser.role !== 'dev') return;
+  if (!confirm(`Удалить организацию «${name}» из списка «Наши ОО»?\n\nДействие необратимо.`)) return;
+  try {
+    await window.deleteDoc(window.doc(window.db, "orgApplications", id));
+  } catch (e) {
+    console.error('Ошибка удаления ОО:', e);
+    alert('Не удалось удалить организацию. Попробуйте снова.');
+  }
 }
 
 // ================= ВАКАНСИИ =================
@@ -911,10 +955,26 @@ function openApplyModal(title) {
 async function submitApplication() {
   const fio = document.getElementById('appFio').value.trim();
   const exp = document.getElementById('appExp').value.trim();
-  if (!fio || !exp) { alert('Заполните поля'); return; }
-  await window.addDoc(window.collection(window.db, "applications"), { vacancy: window.currentVacancy, fio, exp });
-  closeModal('applyModal'); alert('Заявка отправлена!');
-  document.getElementById('appFio').value = ''; document.getElementById('appExp').value = '';
+  const phone = document.getElementById('appPhone').value.trim();
+  const vk = document.getElementById('appVk').value.trim();
+  
+  if (!fio || !exp || !phone) { alert('Заполните обязательные поля (ФИО, Опыт, Телефон)'); return; }
+  
+  await window.addDoc(window.collection(window.db, "applications"), { 
+    vacancy: window.currentVacancy, 
+    fio, 
+    exp, 
+    phone, 
+    vk 
+  });
+  
+  closeModal('applyModal'); 
+  alert('Заявка отправлена!');
+  
+  document.getElementById('appFio').value = ''; 
+  document.getElementById('appExp').value = ''; 
+  document.getElementById('appPhone').value = ''; 
+  document.getElementById('appVk').value = '';
 }
 
 // ================= ЗАЯВКИ ОУ =================
