@@ -599,6 +599,8 @@ const systemsList = [
 // ================= НАВИГАЦИЯ =================
 function showPage(pageId) {
   if (dbData.frozen && currentUser?.role !== 'dev' && pageId !== 'home') return;
+  
+  // Заместитель видит только главную и вакансии
   if (currentUser?.role === 'zam' && pageId !== 'jobs' && pageId !== 'home') return;
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -661,6 +663,7 @@ function updateUI() {
     userBadge.classList.add('active');
     userName.textContent = `${currentUser.title} (${currentUser.login})`;
     
+    // РАЗРАБОТЧИК - ВСЕ ФУНКЦИИ
     if (currentUser.role === 'dev') {
       devControls.classList.add('active');
       const adminLink = document.createElement('a');
@@ -669,24 +672,29 @@ function updateUI() {
       adminLink.onclick = () => showPage('admin');
       document.getElementById('mainNav').appendChild(adminLink);
       updateFreezeBtn();
+      
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
       teamAdminPanel.style.display = 'block';
     } 
+    // РУКОВОДИТЕЛЬ - ВСЕ ФУНКЦИИ, КРОМЕ ЗАМОРОЗКИ
     else if (currentUser.role === 'boss') {
       devControls.classList.remove('active');
+      
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'block';
       ouAdminPanel.style.display = 'block';
       teamAdminPanel.style.display = 'block';
     }
+    // ЗАМЕСТИТЕЛЬ - ТОЛЬКО ВАКАНСИИ
     else if (currentUser.role === 'zam') {
       devControls.classList.remove('active');
       jobsAdminPanel.style.display = 'block';
       appsAdminPanel.style.display = 'none';
       ouAdminPanel.style.display = 'none';
       teamAdminPanel.style.display = 'none';
+      
       document.querySelectorAll('.nav a').forEach(a => {
         if(a.dataset.page !== 'jobs' && a.dataset.page !== 'home') a.style.display = 'none';
       });
