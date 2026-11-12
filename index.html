@@ -41,7 +41,6 @@
             --dark-pink: #e88a9f;
             --accent-pink: #d65c7a;
             --accent-blue: #8ab6d6;
-            --accent-blue-hover: #6a9bc4;
             --card-bg: rgba(255, 255, 255, 0.95);
             --shadow: 0 10px 30px rgba(138, 182, 214, 0.15);
             --shadow-hover: 0 15px 40px rgba(138, 182, 214, 0.3);
@@ -119,9 +118,8 @@
         .status-badge { font-size: 0.75em; padding: 4px 10px; border-radius: 10px; font-weight: bold; color: white; }
         .status-maintenance { background: #f0ad4e; }
         .status-dev { background: var(--accent-blue); }
-        .btn-view-system { display: none; margin-top: 20px; padding: 10px 25px; background: var(--accent-blue); color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; text-decoration: none; }
 
-        /* --- МОДАЛКИ --- */
+        /* --- МОДАЛЬНОЕ ОКНО ПРЕИМУЩЕСТВ (ВОССТАНОВЛЕНО) --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(74, 59, 76, 0.6); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content { background: var(--bg-gradient); padding: 40px; border-radius: 30px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); transform: translateY(20px); transition: transform 0.3s ease; }
@@ -188,7 +186,7 @@
         .partner-form input, .partner-form textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; outline: none; margin-bottom: 10px;}
         .partner-form button { background: var(--accent-blue); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
 
-        /* --- ДЛЯ ОУ (МНОГОШАГОВАЯ ФОРМА) --- */
+        /* --- ДЛЯ ОУ --- */
         .for-ou-tabs { display: flex; justify-content: center; margin-bottom: 30px; gap: 10px; flex-wrap: wrap; }
         .btn-tab { padding: 15px 30px; background: white; border: 2px solid var(--accent-blue); color: var(--text-color); border-radius: 10px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
         .btn-tab:hover { background: var(--accent-blue); color: white; }
@@ -196,7 +194,6 @@
         .ou-step-container { display: none; background: white; padding: 40px; border-radius: 20px; box-shadow: var(--shadow); max-width: 800px; margin: 0 auto; border-top: 5px solid var(--accent-blue); }
         .ou-step-container.active { display: block; animation: fadeIn 0.5s ease; }
 
-        /* Поиск города */
         .search-city-wrapper { position: relative; margin-bottom: 20px; }
         .search-city-input { width: 100%; padding: 15px; border: 2px solid var(--accent-blue); border-radius: 10px; font-size: 1.1em; outline: none; }
         .city-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-radius: 0 0 10px 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; display: none; z-index: 10; }
@@ -207,7 +204,6 @@
         .not-found-block.active { display: block; }
         .btn-find-oo { background: var(--accent-blue); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* Сама форма */
         .ou-form-title { color: var(--accent-blue); text-align: center; font-size: 1.4em; margin-bottom: 20px; font-weight: bold; }
         .ou-form-section-title { text-align: center; color: var(--text-color); font-weight: bold; margin: 30px 0 20px 0; position: relative; }
         .ou-form-section-title::before, .ou-form-section-title::after { content: ''; position: absolute; top: 50%; width: 30%; height: 1px; background: #ddd; }
@@ -362,14 +358,19 @@
             <div class="systems-grid" id="systems-container"></div>
         </div>
 
-        <!-- Модалка Преимуществ -->
+        <!-- МОДАЛЬНОЕ ОКНО ПРЕИМУЩЕСТВ (ВОССТАНОВЛЕНО) -->
         <div class="modal-overlay" id="advantagesModal" onclick="closeModal(event)">
             <div class="modal-content" onclick="event.stopPropagation()">
                 <span class="close-modal" onclick="closeModal(event)">&times;</span>
-                <h2>Наши преимущества</h2>
+                <h2 style="color: var(--accent-blue); margin-bottom: 30px;">Наши преимущества</h2>
                 <div class="adv-grid">
-                    <div class="adv-card"><h3>Опыт</h3><p>Многолетний опыт работы в сфере образования.</p></div>
-                    <div class="adv-card"><h3>Поддержка</h3><p>Наши специалисты всегда на связи.</p></div>
+                    <div class="adv-card"><h3>Опыт</h3><p>Многолетний опыт работы в сфере образования и успешная реализация множества проектов.</p></div>
+                    <div class="adv-card"><h3>Круглосуточная поддержка</h3><p>Наши специалисты всегда на связи и готовы помочь в любое время суток.</p></div>
+                </div>
+                <div class="adv-grid-3">
+                    <div class="adv-card"><h3>Легальность</h3><p>Вся деятельность осуществляется строго в соответствии с законодательством РФ.</p></div>
+                    <div class="adv-card"><h3>Карьерный рост</h3><p>Мы создаем условия для профессионального развития и карьерного роста педагогов.</p></div>
+                    <div class="adv-card"><h3>Инновации</h3><p>Внедрение современных цифровых технологий в образовательный процесс.</p></div>
                 </div>
             </div>
         </div>
@@ -438,11 +439,10 @@
             </div>
         </div>
 
-        <!-- 8. ДЛЯ ОУ (ВОССТАНОВЛЕНА МНОГОШАГОВАЯ ФОРМА) -->
+        <!-- 8. ДЛЯ ОУ -->
         <div id="for-ou" class="section">
             <h2>Для образовательных учреждений</h2>
             
-            <!-- Шаг 1: Выбор роли -->
             <div class="ou-step-container active" id="step-role">
                 <h3 class="ou-form-title">Подключение ОО к МРОО ЦРО</h3>
                 <p style="text-align: center; margin-bottom: 20px;">Выберите вашу роль, чтобы продолжить:</p>
@@ -453,116 +453,33 @@
                 </div>
             </div>
 
-            <!-- Шаг 2: Поиск города -->
             <div class="ou-step-container" id="step-search">
                 <h3 class="ou-form-title">Поиск образовательной организации</h3>
-                <p style="text-align: center; margin-bottom: 20px;">Для начала проверьте, зарегистрирована ли ваша образовательная организация.</p>
-                
+                <p style="text-align: center; margin-bottom: 20px;">Проверьте, зарегистрирована ли ваша ОО.</p>
                 <div class="search-city-wrapper">
                     <input type="text" class="search-city-input" id="city-input" placeholder="Введите название населённого пункта" oninput="filterCities()" onfocus="showCities()">
                     <div class="city-dropdown" id="city-dropdown"></div>
                 </div>
-
                 <div class="not-found-block" id="not-found-block">
                     <p>Не нашли вашу ОО в списке?</p>
                     <button class="btn-find-oo" onclick="goToApplicationForm()">Оставить заявку на подключение</button>
                 </div>
             </div>
 
-            <!-- Шаг 3: Форма заявки -->
             <div class="ou-step-container" id="step-application">
-                <h3 class="ou-form-title">Заявка на подключение образовательной организации к МРОО ЦРО</h3>
-                
+                <h3 class="ou-form-title">Заявка на подключение к МРОО ЦРО</h3>
                 <form onsubmit="submitOUApplication(event)">
-                    <div class="ou-form-section-title">Информация об образовательной организации</div>
-                    
-                    <div class="ou-form-group">
-                        <label>Краткое название<span>*</span></label>
-                        <input type="text" name="shortName" required>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Полное название<span>*</span></label>
-                        <input type="text" name="fullName" required>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Тип<span>*</span></label>
-                        <select name="type" required>
-                            <option value="">Выберите тип ОО</option>
-                            <option value="Школа">Школа</option>
-                            <option value="Гимназия">Гимназия</option>
-                            <option value="Лицей">Лицей</option>
-                            <option value="Детский сад">Детский сад</option>
-                        </select>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Организационная структура</label>
-                        <select name="structure">
-                            <option>Самостоятельное учреждение</option>
-                            <option>Филиал</option>
-                        </select>
-                    </div>
-                    
-                    <div class="ou-form-group">
-                        <label>Желаемая информационная система<span>*</span></label>
-                        <select name="desiredSystem" id="desiredSystemSelect" required>
-                            <option value="">Выберите систему</option>
-                        </select>
-                    </div>
-
-                    <div class="ou-form-group">
-                        <label>Тарифный план<span>*</span></label>
-                        <select name="tariff" required>
-                            <option value="">Выберите тарифный план</option>
-                            <option value="Базовый">Базовый</option>
-                            <option value="Премиум">Премиум</option>
-                        </select>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>БИН/ИНН<span>*</span></label>
-                        <input type="text" name="inn" required>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Месторасположение<span>*</span></label>
-                        <input type="text" name="location" required placeholder="Город, область">
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Адрес ОО</label>
-                        <input type="text" name="address">
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Телефон ОО</label>
-                        <input type="tel" name="phone">
-                    </div>
+                    <div class="ou-form-section-title">Информация об ОО</div>
+                    <div class="ou-form-group"><label>Краткое название<span>*</span></label><input type="text" name="shortName" required></div>
+                    <div class="ou-form-group"><label>Полное название<span>*</span></label><input type="text" name="fullName" required></div>
+                    <div class="ou-form-group"><label>Тип<span>*</span></label><select name="type" required><option value="">Выберите тип ОО</option><option value="Школа">Школа</option><option value="Гимназия">Гимназия</option></select></div>
+                    <div class="ou-form-group"><label>БИН/ИНН<span>*</span></label><input type="text" name="inn" required></div>
+                    <div class="ou-form-group"><label>Месторасположение<span>*</span></label><input type="text" name="location" required></div>
 
                     <div class="ou-form-section-title">Информация об отправителе</div>
-
-                    <div class="ou-form-group">
-                        <label>Фамилия Имя Отчество<span>*</span></label>
-                        <input type="text" name="senderFIO" required>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Соцсеть для связи<span>*</span></label>
-                        <select name="social" required>
-                            <option value="">Выберите соцсеть</option>
-                            <option value="VK">VK</option>
-                            <option value="Telegram">Telegram</option>
-                            <option value="WhatsApp">WhatsApp</option>
-                        </select>
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Телефон</label>
-                        <input type="tel" name="senderPhone">
-                    </div>
-                    <div class="ou-form-group">
-                        <label>Email<span>*</span></label>
-                        <input type="email" name="senderEmail" required>
-                    </div>
-
-                    <div class="ou-form-group">
-                        <label>Комментарий к заявке</label>
-                        <textarea rows="3" name="comment"></textarea>
-                    </div>
-
+                    <div class="ou-form-group"><label>ФИО<span>*</span></label><input type="text" name="senderFIO" required></div>
+                    <div class="ou-form-group"><label>Email<span>*</span></label><input type="email" name="senderEmail" required></div>
+                    
                     <div class="ou-form-group">
                         <label>Введите символы с картинки<span>*</span></label>
                         <div class="captcha-box">
@@ -571,12 +488,10 @@
                             <span class="captcha-refresh" onclick="refreshCaptcha()">↻</span>
                         </div>
                     </div>
-
                     <div class="checkbox-group">
                         <input type="checkbox" id="confirm-check" required>
-                        <label for="confirm-check">Я подтверждаю, что являюсь сотрудником образовательной организации и указанная информация является верной.</label>
+                        <label for="confirm-check">Я подтверждаю достоверность данных.</label>
                     </div>
-
                     <button type="submit" class="btn-send-app">Отправить заявку</button>
                 </form>
             </div>
@@ -769,12 +684,8 @@
             jobs: []
         };
 
-        // --- БАЗОВЫЕ ФУНКЦИИ ---
-        function toggleMenu() {
-            document.getElementById('sideMenu').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
-            document.getElementById('hintArrow').classList.remove('active');
-        }
+        // --- ФУНКЦИИ ---
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); document.getElementById('hintArrow').classList.remove('active'); }
         function showSection(id, btn) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.side-menu button').forEach(b => b.classList.remove('active'));
@@ -783,7 +694,11 @@
             if (document.getElementById('sideMenu').classList.contains('open')) toggleMenu();
         }
 
-        // --- ВХОД ---
+        // --- МОДАЛКА ПРЕИМУЩЕСТВ ---
+        function openModal() { document.getElementById('advantagesModal').classList.add('active'); }
+        function closeModal(e) { if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-modal')) document.getElementById('advantagesModal').classList.remove('active'); }
+
+        // --- ВХОД И СИНХРОНИЗАЦИЯ ---
         function openDevLogin() { document.getElementById('devLoginModal').classList.add('active'); document.getElementById('devPassword').value = ''; document.getElementById('loginError').style.display = 'none'; }
         function checkDevPassword() {
             if (document.getElementById('devPassword').value === RAW_PASSWORD) { 
@@ -795,7 +710,6 @@
         }
         function closeAdminPanel() { document.getElementById('adminPanel').classList.remove('active'); checkSiteStatus(); }
 
-        // --- СИНХРОНИЗАЦИЯ ---
         async function initSync() {
             if (window.db) {
                 const docRef = window.firebaseDoc(window.db, "siteData", "main");
@@ -809,28 +723,19 @@
             }
         }
         async function saveToFirestore(data) {
-            if (window.db) {
-                const docRef = window.firebaseDoc(window.db, "siteData", "main");
-                await window.firebaseSetDoc(docRef, data, { merge: true });
-            }
+            if (window.db) { const docRef = window.firebaseDoc(window.db, "siteData", "main"); await window.firebaseSetDoc(docRef, data, { merge: true }); }
         }
 
-        // --- СТАТУСЫ САЙТА ---
         function checkSiteStatus() {
             const screen = document.getElementById('maintenance-screen');
-            const icon = document.getElementById('maint-icon');
-            const title = document.getElementById('maint-title');
-            const text = document.getElementById('maint-text');
-
             if (siteData.siteStatus === 'open' || !siteData.siteStatus) { screen.style.display = 'none'; return; }
             screen.style.display = 'flex';
-            if (siteData.siteStatus === 'maintenance') { icon.innerText = '⚙️'; title.innerText = 'Сайт на обслуживании'; text.innerText = 'Мы проводим плановые технические работы. Пожалуйста, зайдите позже.'; } 
-            else if (siteData.siteStatus === 'global_update') { icon.innerText = '🚀'; title.innerText = 'Глобальное обновление'; text.innerText = 'Мы работаем над масштабным обновлением сайта. Скоро вернемся!'; } 
-            else if (siteData.siteStatus === 'prophylaxis') { icon.innerText = '🛠️'; title.innerText = 'Профилактические работы'; text.innerText = 'Проводим плановую проверку систем. Приносим извинения за неудобства.'; }
+            if (siteData.siteStatus === 'maintenance') { document.getElementById('maint-icon').innerText = '⚙️'; document.getElementById('maint-title').innerText = 'Сайт на обслуживании'; document.getElementById('maint-text').innerText = 'Мы проводим плановые технические работы.'; } 
+            else if (siteData.siteStatus === 'global_update') { document.getElementById('maint-icon').innerText = '🚀'; document.getElementById('maint-title').innerText = 'Глобальное обновление'; document.getElementById('maint-text').innerText = 'Мы работаем над масштабным обновлением сайта.'; } 
+            else if (siteData.siteStatus === 'prophylaxis') { document.getElementById('maint-icon').innerText = '🛠️'; document.getElementById('maint-title').innerText = 'Профилактические работы'; document.getElementById('maint-text').innerText = 'Проводим плановую проверку систем.'; }
         }
         function changeSiteStatus(status) { siteData.siteStatus = status; saveToFirestore({ siteStatus: siteData.siteStatus }); checkSiteStatus(); }
 
-        // --- ОБНОВЛЕНИЕ UI ---
         function updateUI() {
             document.getElementById('dynamic-home-title').innerText = siteData.homeTitle;
             document.getElementById('dynamic-home-desc').innerText = siteData.homeDesc;
@@ -842,13 +747,10 @@
             renderSystems(); renderContacts(); renderAdminTree();
         }
 
-        // --- РЕНДЕР ---
         function renderSystems() {
-            const container = document.getElementById('systems-container');
-            container.innerHTML = '';
+            const container = document.getElementById('systems-container'); container.innerHTML = '';
             siteData.systems.forEach(sys => {
-                const div = document.createElement('div');
-                div.className = 'ais-item';
+                const div = document.createElement('div'); div.className = 'ais-item';
                 let badges = '';
                 if (sys.paid) badges += `<span class="paid-badge">Платно</span>`;
                 if (sys.status === 'maintenance') badges += `<span class="status-badge status-maintenance">Нет</span>`;
@@ -858,11 +760,9 @@
             });
         }
         function renderContacts() {
-            const container = document.getElementById('contacts-container');
-            container.innerHTML = '';
+            const container = document.getElementById('contacts-container'); container.innerHTML = '';
             siteData.contacts.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'contact-card';
+                const div = document.createElement('div'); div.className = 'contact-card';
                 div.innerHTML = `<div class="contact-icon">${c.icon}</div><h4>${c.title}</h4><p>${c.text}</p>`;
                 container.appendChild(div);
             });
@@ -875,12 +775,10 @@
             `;
         }
 
-        // --- АДМИНКА ---
         function switchAdminTab(tabId, btn) {
             document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+            document.getElementById(tabId).classList.add('active'); btn.classList.add('active');
         }
 
         function loadAdminData() {
@@ -888,58 +786,31 @@
             document.getElementById('edit-home-desc').value = siteData.homeDesc;
             document.getElementById('edit-tariff-basic').value = siteData.tariffBasic;
             document.getElementById('edit-tariff-premium').value = siteData.tariffPremium;
-            
-            // Админы
             document.getElementById('edit-role-leader').value = siteData.roleLeader;
             document.getElementById('edit-role-deputy').value = siteData.roleDeputy;
             document.getElementById('edit-role-chairman').value = siteData.roleChairman;
-
-            // Документы
             document.getElementById('edit-doc-ustav').value = siteData.docs.ustav || '';
             document.getElementById('edit-doc-policy').value = siteData.docs.policy || '';
             document.getElementById('edit-doc-privacy').value = siteData.docs.privacy || '';
-
-            // Статус
             const radios = document.getElementsByName('siteStatus');
             radios.forEach(r => { if (r.value === (siteData.siteStatus || 'open')) r.checked = true; });
-
             renderAdminSystems(); renderAdminContacts(); renderAppeals(); renderPartners();
         }
 
         function saveData(type) {
-            if (type === 'home') {
-                siteData.homeTitle = document.getElementById('edit-home-title').value;
-                siteData.homeDesc = document.getElementById('edit-home-desc').value;
-                saveToFirestore({ homeTitle: siteData.homeTitle, homeDesc: siteData.homeDesc });
-            } else if (type === 'tariffs') {
-                siteData.tariffBasic = document.getElementById('edit-tariff-basic').value;
-                siteData.tariffPremium = document.getElementById('edit-tariff-premium').value;
-                saveToFirestore({ tariffBasic: siteData.tariffBasic, tariffPremium: siteData.tariffPremium });
-            } else if (type === 'systems') {
-                saveToFirestore({ systems: siteData.systems });
-            } else if (type === 'contacts') {
-                saveToFirestore({ contacts: siteData.contacts });
-            } else if (type === 'admin') {
-                siteData.roleLeader = document.getElementById('edit-role-leader').value;
-                siteData.roleDeputy = document.getElementById('edit-role-deputy').value;
-                siteData.roleChairman = document.getElementById('edit-role-chairman').value;
-                saveToFirestore({ roleLeader: siteData.roleLeader, roleDeputy: siteData.roleDeputy, roleChairman: siteData.roleChairman });
-            } else if (type === 'docs') {
-                siteData.docs.ustav = document.getElementById('edit-doc-ustav').value || '#';
-                siteData.docs.policy = document.getElementById('edit-doc-policy').value || '#';
-                siteData.docs.privacy = document.getElementById('edit-doc-privacy').value || '#';
-                saveToFirestore({ docs: siteData.docs });
-            }
-            updateUI();
-            alert('Сохранено!');
+            if (type === 'home') { siteData.homeTitle = document.getElementById('edit-home-title').value; siteData.homeDesc = document.getElementById('edit-home-desc').value; saveToFirestore({ homeTitle: siteData.homeTitle, homeDesc: siteData.homeDesc }); } 
+            else if (type === 'tariffs') { siteData.tariffBasic = document.getElementById('edit-tariff-basic').value; siteData.tariffPremium = document.getElementById('edit-tariff-premium').value; saveToFirestore({ tariffBasic: siteData.tariffBasic, tariffPremium: siteData.tariffPremium }); } 
+            else if (type === 'systems') { saveToFirestore({ systems: siteData.systems }); } 
+            else if (type === 'contacts') { saveToFirestore({ contacts: siteData.contacts }); } 
+            else if (type === 'admin') { siteData.roleLeader = document.getElementById('edit-role-leader').value; siteData.roleDeputy = document.getElementById('edit-role-deputy').value; siteData.roleChairman = document.getElementById('edit-role-chairman').value; saveToFirestore({ roleLeader: siteData.roleLeader, roleDeputy: siteData.roleDeputy, roleChairman: siteData.roleChairman }); } 
+            else if (type === 'docs') { siteData.docs.ustav = document.getElementById('edit-doc-ustav').value || '#'; siteData.docs.policy = document.getElementById('edit-doc-policy').value || '#'; siteData.docs.privacy = document.getElementById('edit-doc-privacy').value || '#'; saveToFirestore({ docs: siteData.docs }); }
+            updateUI(); alert('Сохранено!');
         }
 
         function renderAdminSystems() {
-            const container = document.getElementById('is-editor-container');
-            container.innerHTML = '';
+            const container = document.getElementById('is-editor-container'); container.innerHTML = '';
             siteData.systems.forEach((sys, i) => {
-                const div = document.createElement('div');
-                div.className = 'is-admin-card';
+                const div = document.createElement('div'); div.className = 'is-admin-card';
                 div.innerHTML = `
                     <input type="text" value="${sys.name}" onchange="siteData.systems[${i}].name = this.value" style="font-weight:bold; border:none; border-bottom:1px solid #ccc; width:100%; margin-bottom:10px;">
                     <div class="is-admin-flags">
@@ -955,11 +826,9 @@
         function addNewIS() { siteData.systems.push({ name: 'Новая система', paid: false, status: 'none' }); renderAdminSystems(); }
 
         function renderAdminContacts() {
-            const container = document.getElementById('contacts-editor-container');
-            container.innerHTML = '';
+            const container = document.getElementById('contacts-editor-container'); container.innerHTML = '';
             siteData.contacts.forEach((c, i) => {
-                const div = document.createElement('div');
-                div.className = 'contact-admin-card';
+                const div = document.createElement('div'); div.className = 'contact-admin-card';
                 div.innerHTML = `
                     <input type="text" value="${c.icon}" onchange="siteData.contacts[${i}].icon = this.value" style="text-align:center;">
                     <div>
@@ -973,92 +842,26 @@
         }
         function addContactBlock() { siteData.contacts.push({ icon: "💬", title: "Новый блок", text: "Описание" }); renderAdminContacts(); }
 
-        function renderAppeals() {
-            const tbody = document.querySelector('#appeals-table tbody');
-            tbody.innerHTML = siteData.appeals.length === 0 ? '<tr><td>Нет обращений</td></tr>' : '';
-            siteData.appeals.forEach(a => {
-                tbody.innerHTML += `<tr><td><b>${a.type}</b><br>${a.name}</td><td>${a.text}</td><td><button class="btn-accept" onclick="window.location.href='mailto:${a.email}'">Ответить</button></td></tr>`;
-            });
-        }
-        function renderPartners() {
-            const tbody = document.querySelector('#partners-table tbody');
-            tbody.innerHTML = siteData.partners.length === 0 ? '<tr><td>Нет заявок</td></tr>' : '';
-            siteData.partners.forEach(p => {
-                tbody.innerHTML += `<tr><td><b>${p.org}</b><br>${p.name}</td><td>${p.text}</td><td><button class="btn-accept" onclick="window.location.href='mailto:${p.email}'">Ответить</button></td></tr>`;
-            });
-        }
+        function renderAppeals() { const t = document.querySelector('#appeals-table tbody'); t.innerHTML = siteData.appeals.length === 0 ? '<tr><td>Нет обращений</td></tr>' : ''; siteData.appeals.forEach(a => { t.innerHTML += `<tr><td><b>${a.type}</b><br>${a.name}</td><td>${a.text}</td><td><button class="btn-accept" onclick="window.location.href='mailto:${a.email}'">Ответить</button></td></tr>`; }); }
+        function renderPartners() { const t = document.querySelector('#partners-table tbody'); t.innerHTML = siteData.partners.length === 0 ? '<tr><td>Нет заявок</td></tr>' : ''; siteData.partners.forEach(p => { t.innerHTML += `<tr><td><b>${p.org}</b><br>${p.name}</td><td>${p.text}</td><td><button class="btn-accept" onclick="window.location.href='mailto:${p.email}'">Ответить</button></td></tr>`; }); }
 
-        // --- ФОРМЫ ---
-        function submitAppeal(e) {
-            e.preventDefault();
-            const form = e.target;
-            siteData.appeals.push({ id: Date.now(), type: form.appealType.value, name: form.appealName.value, email: form.appealEmail.value, text: form.appealText.value });
-            saveToFirestore({ appeals: siteData.appeals });
-            alert('Отправлено!'); form.reset();
-        }
-        function submitPartnership(e) {
-            e.preventDefault();
-            const form = e.target;
-            siteData.partners.push({ id: Date.now(), org: form.orgName.value, name: form.contactName.value, email: form.contactEmail.value, text: form.proposal.value });
-            saveToFirestore({ partners: siteData.partners });
-            alert('Отправлено!'); form.reset();
-        }
+        function submitAppeal(e) { e.preventDefault(); const f = e.target; siteData.appeals.push({ id: Date.now(), type: f.appealType.value, name: f.appealName.value, email: f.appealEmail.value, text: f.appealText.value }); saveToFirestore({ appeals: siteData.appeals }); alert('Отправлено!'); f.reset(); }
+        function submitPartnership(e) { e.preventDefault(); const f = e.target; siteData.partners.push({ id: Date.now(), org: f.orgName.value, name: f.contactName.value, email: f.contactEmail.value, text: f.proposal.value }); saveToFirestore({ partners: siteData.partners }); alert('Отправлено!'); f.reset(); }
         
-        // --- МНОГОШАГОВАЯ ФОРМА ОУ (ВОССТАНОВЛЕНА) ---
-        function startApplication(role) {
-            document.getElementById('step-role').classList.remove('active');
-            document.getElementById('step-search').classList.add('active');
-            // Можно сохранить роль в переменную, если нужно
-            console.log("Выбранная роль: " + role);
-        }
-
+        function startApplication(role) { document.getElementById('step-role').classList.remove('active'); document.getElementById('step-search').classList.add('active'); }
         function showCities() {
-            const dropdown = document.getElementById('city-dropdown');
-            dropdown.innerHTML = '';
-            const cities = ["Москва", "Санкт-Петербург", "Екатеринбург", "Новосибирск", "Казань", "Нижний Новгород"];
-            cities.forEach(city => {
-                const div = document.createElement('div');
-                div.className = 'city-option';
-                div.innerText = city;
-                div.onclick = () => {
-                    document.getElementById('city-input').value = city;
-                    dropdown.classList.remove('active');
-                    document.getElementById('not-found-block').classList.add('active');
-                };
+            const dropdown = document.getElementById('city-dropdown'); dropdown.innerHTML = '';
+            ["Москва", "Санкт-Петербург", "Екатеринбург", "Новосибирск", "Казань"].forEach(city => {
+                const div = document.createElement('div'); div.className = 'city-option'; div.innerText = city;
+                div.onclick = () => { document.getElementById('city-input').value = city; dropdown.classList.remove('active'); document.getElementById('not-found-block').classList.add('active'); };
                 dropdown.appendChild(div);
             });
             dropdown.classList.add('active');
         }
-
-        function filterCities() {
-            const input = document.getElementById('city-input').value.toLowerCase();
-            const dropdown = document.getElementById('city-dropdown');
-            if (input.length > 0) {
-                dropdown.classList.add('active');
-                // Логика фильтрации (упрощена)
-            } else {
-                dropdown.classList.remove('active');
-            }
-        }
-
-        function goToApplicationForm() {
-            document.getElementById('step-search').classList.remove('active');
-            document.getElementById('step-application').classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function refreshCaptcha() {
-            document.getElementById('captcha-text').innerText = Math.floor(10000 + Math.random() * 90000);
-        }
-
-        function submitOUApplication(e) {
-            e.preventDefault();
-            alert('Заявка на подключение ОУ успешно отправлена! Мы свяжемся с вами.');
-            e.target.reset();
-            document.getElementById('step-application').classList.remove('active');
-            document.getElementById('step-role').classList.add('active');
-            refreshCaptcha();
-        }
+        function filterCities() { /* Упрощено */ }
+        function goToApplicationForm() { document.getElementById('step-search').classList.remove('active'); document.getElementById('step-application').classList.add('active'); }
+        function refreshCaptcha() { document.getElementById('captcha-text').innerText = Math.floor(10000 + Math.random() * 90000); }
+        function submitOUApplication(e) { e.preventDefault(); alert('Заявка отправлена!'); e.target.reset(); document.getElementById('step-application').classList.remove('active'); document.getElementById('step-role').classList.add('active'); refreshCaptcha(); }
 
         window.onload = () => { setTimeout(initSync, 500); };
     </script>
